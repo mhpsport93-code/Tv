@@ -1,12 +1,3680 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Hello World</title>
+  <title>MHP-LIVE - Responsive Channel Grid</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    #navbar, .navbar, .blogger-navbar, .header, .top-navbar, .nav-bar {
+      display: none !important;
+    }
+
+    :root {
+      --bg-dark: #08090e;
+      --panel-dark: #181c22;
+      --card-dark: #1c2028;
+      --text-primary-dark: #e0e7f1;
+      --muted-dark: #b0b6bc;
+      --pill-dark: #254133;
+      --bg-light: #f5f7fa;
+      --panel-light: #e2e5ea;
+      --card-light: #ffffff;
+      --text-primary-light: #2b2b2b;
+      --muted-light: #7a7a7a;
+      --pill-light: #cbdbd6;
+      --bg: var(--bg-dark);
+      --panel: var(--panel-dark);
+      --card: var(--card-dark);
+      --text-primary: var(--text-primary-dark);
+      --muted: var(--muted-dark);
+      --pill: var(--pill-dark);
+      --accent: #11d87f;
+      --live: #ff6262;
+      --glass: rgba(255, 255, 255, 0.05);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Poppins", system-ui, Segoe UI, Roboto, Helvetica Neue, Arial;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      transition: background 0.3s, color 0.3s;
+      overflow-x: hidden;
+    }
+
+    .wrap {
+      max-width: 100%;
+      width: calc(100% - 16px);
+      margin: 8px auto;
+      padding: 8px;
+      overflow-x: hidden;
+    }
+
+    .top {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 101;
+      padding: 0 8px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      color: var(--accent);
+      user-select: none;
+    }
+
+    .brand .logo-box {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #00efb2, #0055ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #012117;
+      font-weight: 800;
+      font-size: 22px;
+    }
+
+    .search {
+      flex: 1;
+      max-width: 400px;
+      min-width: 140px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--panel);
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      margin-right: 8px;
+    }
+
+    .search svg {
+      opacity: 0.8;
+      stroke: var(--muted);
+    }
+
+    .search input {
+      flex: 1;
+      min-width: 0;
+      font-size: 14px;
+      background: transparent;
+      border: 0;
+      color: var(--text-primary);
+      outline: none;
+    }
+
+    .top .icons {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .toggle {
+      width: 40px;
+      height: 20px;
+      background: var(--card);
+      border-radius: 12px;
+      position: relative;
+      cursor: pointer;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
+      transition: background 0.3s;
+    }
+
+    .toggle::before {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 16px;
+      height: 16px;
+      background: var(--accent);
+      border-radius: 50%;
+      transition: transform 0.3s, background 0.3s;
+      box-shadow: 0 0 8px var(--accent);
+    }
+
+    .toggle.active {
+      background: #2c3e50;
+    }
+
+    .toggle.active::before {
+      transform: translateX(20px);
+      background: #f1c40f;
+      box-shadow: 0 0 10px #f1c40f;
+    }
+
+    .hamburger {
+      width: 32px;
+      height: 22px;
+      position: relative;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      user-select: none;
+    }
+
+    .hamburger span {
+      display: block;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--muted);
+      transition: background 0.3s;
+    }
+
+    .hamburger:hover span {
+      background: var(--accent);
+    }
+
+    #sidebar {
+      position: fixed;
+      top: 0;
+      left: -300px;
+      width: 280px;
+      height: 100%;
+      background: var(--panel);
+      color: var(--text-primary);
+      box-shadow: 3px 0 12px rgba(0, 0, 0, 0.4);
+      padding: 20px;
+      overflow-y: auto;
+      transition: left 0.3s ease;
+      z-index: 200;
+      font-size: 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    #sidebar.active {
+      left: 0;
+    }
+
+    #sidebar .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      font-size: 24px;
+      cursor: pointer;
+      user-select: none;
+      color: var(--muted);
+      transition: color 0.3s;
+    }
+
+    #sidebar .close-btn:hover {
+      color: var(--accent);
+    }
+
+    #sidebar-pages {
+      margin-bottom: 14px;
+    }
+
+    #sidebar-pages select {
+      margin-right: 10px;
+      padding: 7px;
+      border-radius: 7px;
+      border: 1px solid var(--muted);
+      background: var(--card);
+      color: var(--text-primary);
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 15px;
+      outline: none;
+    }
+
+    #sidebar-pages .page-text {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 600;
+      font-style: italic;
+    }
+
+    #sidebar-socials a {
+      margin-right: 12px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 20px;
+      display: inline-block;
+      transition: color 0.3s;
+    }
+
+    #sidebar-socials a:hover {
+      color: var(--accent);
+    }
+
+    svg.social-icon {
+      width: 20px;
+      height: 20px;
+      vertical-align: middle;
+      fill: currentColor;
+    }
+
+    .cats {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      overflow-x: auto;
+      padding: 12px 8px;
+      margin-bottom: 12px;
+    }
+
+    .cat {
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.01));
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      color: var(--muted);
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+      font-size: 13px;
+      transition: background 0.15s, color 0.15s;
+      user-select: none;
+    }
+
+    .cat.active {
+      background: var(--accent);
+      color: #00140a;
+      box-shadow: 0 8px 22px rgba(17, 216, 127, 0.3);
+      border-color: var(--accent);
+    }
+
+    .head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 8px 8px 16px;
+      padding: 0 8px;
+    }
+
+    .head h2 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      user-select: none;
+    }
+
+    .head .count {
+      color: var(--muted);
+      font-size: 14px;
+      user-select: none;
+    }
+
+    #ch-total {
+      font-size: 13px;
+      color: var(--muted);
+      background: var(--panel);
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      user-select: none;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      padding: 0 8px;
+      width: 100%;
+    }
+
+    @media (max-width: 400px) {
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 430px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (min-width: 601px) {
+      .grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, calc(50% - 12px)));
+      }
+    }
+
+    @media (min-width: 1200px) {
+      .grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, calc(33.33% - 12px)));
+      }
+    }
+
+    .card-link {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
+      border-radius: 12px;
+      padding: px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      transition: transform 0.16s ease, box-shadow 0.16s ease;
+      min-height: 264px;
+      width: 100%;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 14px 40px rgba(2, 6, 23, 0.8);
+    }
+
+    .thumb {
+      height: 110px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #0d1115, #181c22);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .thumb img {
+      max-width: 50%;
+      max-height: 80px;
+      filter: brightness(1.1);
+      opacity: 1;
+      transition: filter 0.25s;
+    }
+
+    .thumb .badges {
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      display: flex;
+      gap: 8px;
+      z-index: 3;
+    }
+
+    .badge-live {
+      background: var(--live);
+      color: #fff;
+      padding: 6px 8px;
+      border-radius: 5px;
+      font-weight: 100;
+      font-size: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      opacity: 0.75;
+      box-shadow: 0 0 6px var(--live);
+      transition: opacity 0.2s;
+      user-select: none;
+    }
+
+    .badge-hd {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      background: rgba(15, 60, 30, 0.85);
+      color: #bff0d9;
+      padding: 6px 8px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      user-select: none;
+    }
+
+    .meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 0 4px;
+    }
+
+    .meta .left {
+      flex: 1;
+    }
+
+    .title {
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 1.1;
+      margin-bottom: 3px;
+      color: var(--text-primary);
+      user-select: text;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .genre,
+    .lang {
+      color: var(--muted);
+      font-size: 10px;
+      margin-top: 2px;
+      font-weight: 200;
+      user-select: text;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .pill {
+      font-size: 8px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      background: var(--pill);
+      color: var(--muted);
+      border: 1px solid rgba(255, 255, 255, 0.02);
+      user-select: text;
+      white-space: nowrap;
+    }
+
+    .rating-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 10px;
+      padding: 0 4px;
+    }
+
+    .rating {
+      color: #f6d969;
+      font-weight: 700;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      user-select: none;
+    }
+
+    .fav {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 6px;
+      border-radius: 8px;
+      color: var(--muted);
+      cursor: pointer;
+      user-select: none;
+      transition: border-color 0.3s, color 0.3s;
+    }
+
+    .fav:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .link-btn {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 5px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      color: #fff;
+      background: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      border: none;
+      box-shadow: 0 8px 22px rgba(17, 216, 127, 0.12);
+      transition: background 0.15s;
+      user-select: none;
+    }
+
+    .link-btn:hover {
+      background: #20e184;
+      color: #041d11;
+    }
+
+    /* Popup Styles */
+    .popup-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 300;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .popup-overlay.active {
+      display: flex;
+    }
+
+    .popup {
+      position: relative;
+      width: 90%;
+      max-width: 800px;
+      background: var(--card);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: 0 14px 40px rgba(2, 6, 23, 0.8);
+    }
+
+    .video-container {
+      position: relative;
+      padding-top: 56.25%; /* 16:9 Aspect Ratio */
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .popup iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .popup-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 24px;
+      color: var(--muted);
+      cursor: pointer;
+      user-select: none;
+      transition: color 0.3s;
+      padding: 8px;
+      z-index: 301;
+    }
+
+    .popup-close:hover {
+      color: var(--accent);
+    }
+
+    @media (max-width: 600px) {
+      .wrap {
+        padding: 4px;
+        width: calc(100% - 8px);
+      }
+      .popup {
+        width: 95%;
+        max-width: 100vw;
+      }
+      .search {
+        max-width: 100%;
+      }
+      .top {
+        padding: 0 4px;
+      }
+      .head {
+        padding: 0 4px;
+      }
+      .cats {
+        padding: 12px 4px;
+      }
+    }
+
+    @media (max-width: 430px) {
+      .wrap {
+        padding: 2px;
+        width: calc(100% - 4px);
+      }
+      .popup {
+        width: 100%;
+        max-width: 100vw;
+      }
+    }
+
+    footer {
+      margin-top: 30px;
+      padding: 15px 8px;
+      text-align: center;
+      font-size: 14px;
+      color: var(--muted);
+      user-select: none;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      font-style: italic;
+      background: var(--bg);
+    }
+  </style>
 </head>
 <body>
-  <h1>Hello, World!</h1>
+  <style>
+    #navbar-iframe {
+      display: none !important;
+    }
+  </style>
+
+  <div id="sidebar" aria-label="Sidebar" role="complementary">
+    <div class="close-btn" tabindex="0" role="button" aria-label="Close sidebar">&times;</div>
+    <div id="sidebar-pages" aria-label="Page links">
+      <select id="sidebar-pages-dropdown" aria-label="Select page">
+        <option value="home">Home</option>
+        <option value="about">About</option>
+        <option value="contact">Contact</option>
+      </select>
+      <span class="page-text" id="sidebar-page-content">Home page selected.</span>
+    </div>
+    <div id="sidebar-socials" aria-label="Social media links">
+      <hr>
+      <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook" title="Facebook" class="social-facebook">
+        <svg class="social-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M22.675 0h-21.35C.594 0 0 .593 0 1.326v21.348C0 23.408.594 24 1.326 24h11.495v-9.294H9.692V11.01h3.129V8.413c0-3.1 1.894-4.788 4.66-4.788 1.325 0 2.464.099 2.797.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.59l-.467 3.696h-3.123V24h6.116c.73 0 1.324-.592 1.324-1.326V1.326C24 .593 23.406 0 22.675 0z"/></svg>
+      </a>
+      <a href="https://twitter.com" target="_blank" rel="noopener" aria-label="Twitter" title="Twitter" class="social-twitter">
+        <svg class="social-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M24 4.557a9.94 9.94 0 01-2.828.775 4.932 4.932 0 002.165-2.724 9.865 9.865 0 01-3.127 1.196 4.92 4.92 0 00-8.384 4.482A13.951 13.951 0 011.671 3.149a4.922 4.922 0 001.523 6.573 4.897 4.897 0 01-2.228-.616v.061a4.922 4.922 0 003.946 4.827 4.9 4.9 0 01-2.224.084 4.923 4.923 0 004.596 3.417A9.865 9.865 0 010 21.543a13.9 13.9 0 007.548 2.209c9.055 0 14.009-7.506 14.009-14.008 0-.213-.005-.425-.014-.636A10.012 10.012 0 0024 4.557z"/></svg>
+      </a>
+      <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram" class="social-instagram">
+        <svg class="social-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.334 3.608 1.31.976.976 1.248 2.243 1.31 3.608.058 1.265.07 1.645.07 4.85s-.012 3.584-.07 4.85c-.062 1.366-.334 2.633-1.31 3.608-.976.976-2.243 1.248-3.608 1.31-1.265.058-1.645.07-4.85.07s-3.584-.012-4.85-.07c-1.366-.062-2.633-.334-3.608-1.31-.976-.976-1.248-2.243-1.31-3.608C2.175 15.647 2.163 15.267 2.163 12s.012-3.584.07-4.85c.062-1.366.334-2.633 1.31-3.608.976-.976 2.243-1.248 3.608-1.31C8.416 2.175 8.796 2.163 12 2.163zm0-2.163C8.741 0 8.332.013 7.052.072 5.772.131 4.63.433 3.68 1.383c-.95.95-1.252 2.092-1.31 3.372C2.013 6.682 2 7.092 2 10.35v3.3c0 3.259.013 3.668.072 4.948.058 1.28.36 2.422 1.31 3.372.95.95 2.092 1.252 3.372 1.31C8.332 23.987 8.741 24 12 24s3.668-.013 4.948-.072c1.28-.058 2.422-.36 3.372-1.31.95-.95 1.252-2.092 1.31-3.372.059-1.28.072-1.689.072-4.948v-3.3c0-3.259-.013-3.668-.072-4.948-.058-1.28-.36-2.422-1.31-3.372-.95-.95-2.092-1.252-3.372-1.31C15.668.013 15.259 0 12 0z"/><path d="M12 5.838a6.162 6.162 0 106.162 6.162A6.154 6.154 0 0012 5.838zm0 10.18a4.018 4.018 0 114.018-4.018A4.013 4.013 0 0112 16.018z"/><circle cx="18.406" cy="5.594" r="1.44"/></svg>
+      </a>
+      <a href="https://linkedin.com" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn" class="social-linkedin">
+        <svg class="social-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.447 20.452H17.2v-5.569c0-1.327-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.067V9h3.083v1.561h.043c.429-.813 1.48-1.671 3.047-1.671 3.257 0 3.857 2.146 3.857 4.933v6.629zM5.337 7.433A1.83 1.83 0 013.51 5.585 1.83 1.83 0 015.334 3.75a1.83 1.83 0 011.83 1.835c0 1.013-.82 1.83-1.827 1.83zM6.877 20.452H3.797V9h3.08zM22.225 0H1.771C.792 0 0 .77 0 1.728v20.543C0 23.228.792 24 1.771 24h20.451c.979 0 1.773-.772 1.773-1.729V1.729C23.998.77 23.204 0 22.225 0z"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <div class="wrap" id="main-wrap">
+    <div class="top">
+      <div class="brand" aria-label="Brand logo and name">
+        <div class="logo-box" aria-hidden="true">M</div> MHP.LIVE
+      </div>
+      <div class="search" role="search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 21l-4.35-4.35" stroke="#9aa0a6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /><circle cx="11" cy="11" r="6" stroke="#9aa0a6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        <input id="search" placeholder="Search channels..." autocomplete="off" aria-label="Search channels" />
+        <div style="background:var(--panel);padding:6px 10px;border-radius:99px;border:1px solid rgba(255,255,255,0.02);color:var(--muted);font-weight:100;font-size:13px" aria-hidden="true">All</div>
+      </div>
+      <div class="icons">
+        <div id="toggle-theme" class="toggle" title="Toggle Light/Dark Mode" role="button" aria-label="Toggle Light/Dark Mode" tabindex="0"></div>
+        <div class="hamburger" title="Menu" role="button" aria-label="Open sidebar menu" tabindex="0">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+    <div id="categories" class="cats" aria-label="Channel categories"></div>
+    <div class="head">
+      <div>
+        <h2>All Channels</h2>
+        <div id="count" class="count">0 channels available</div>
+      </div>
+      <div id="ch-total"></div>
+    </div>
+    <div id="grid" class="grid" aria-live="polite"></div>
+  </div>
+  <div id="popup-overlay" class="popup-overlay">
+    <div class="popup">
+      <div class="popup-close" role="button" aria-label="Close popup" tabindex="0">&times;</div>
+      <div class="video-container">
+        <iframe id="popup-iframe" src="" title="Channel Stream" allow="fullscreen; picture-in-picture"></iframe>
+      </div>
+    </div>
+  </div>
+  <footer>© 2025 MHP.LIVE by moviehubplay - All rights reserved.</footer>
+
+  <script>
+    const channels = [
+
+  {
+    "name": "History TV18 HD",
+    "provider": "JioTV Plus",
+    "cat": "TV Series",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/historytv18hd.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/historytv18hd/master.m3u8",
+    "hd": true
+  },
+  
+  {
+    "name": "Sony Ten 5 HD",
+    "provider": "Sony",
+    "cat": "Sports",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/sonyten5hd.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/sonyten5hd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Star Gold HD",
+    "provider": "Star India",
+    "cat": "Movie",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/stargoldhd.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/stargoldhd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Sony Ten 1 HD",
+    "provider": "Sony",
+    "cat": "Sports",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/sonyten1hd.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/sonyten1hd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Travelxp HD",
+    "provider": "Travelxp",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/travelxphd.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/travelxphd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Cartoon Network Telugu",
+    "provider": "Cartoon Network",
+    "cat": "TV Series",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/cartoonnetworktelugu.png",
+    "language": "Telugu",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/cartoonnetworktelugu/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Aaj Tak",
+    "provider": "India Today Group",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/aajtak.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/aajtak/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Aastha",
+    "provider": "Aastha TV",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/aastha.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/aastha/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "ABP News India",
+    "provider": "ABP Group",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/abpnewsindia.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/abpnewsindia/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Asianet News",
+    "provider": "Asianet",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/asianetnews.png",
+    "language": "Malayalam",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/asianetnews/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "CNBC Awaaz",
+    "provider": "CNBC",
+    "cat": "Business",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/cnbcawaaz.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/cnbcawaaz/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "CNN",
+    "provider": "CNN",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/cnn.png",
+    "language": "English",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/cnn/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Colors Gujarati",
+    "provider": "Viacom18",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/colorsgujarati.png",
+    "language": "Gujarati",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/colorsgujarati/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "DD National",
+    "provider": "Doordarshan",
+    "cat": "General",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/ddnational.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/ddnational/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "DD News",
+    "provider": "Doordarshan",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/ddnews.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/ddnews/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "DD Sports",
+    "provider": "Doordarshan",
+    "cat": "Sports",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/ddsports.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/ddsports/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "ET Now",
+    "provider": "Times Network",
+    "cat": "Business",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/etnow.png",
+    "language": "English",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/etnow/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "News 18 India",
+    "provider": "Network18",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/news18india.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/news18india/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "News18 Lokmat",
+    "provider": "Network18",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/news18lokmat.png",
+    "language": "Marathi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/news18lokmat/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "India TV",
+    "provider": "India TV",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/indiatv.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/indiatv/master.m3u8",
+    "hd": false
+  },
+      
+  {
+    "name": "Discovery",
+    "provider": "Discovery Communications",
+    "cat": "TV Series",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/discovery.png",
+    "language": "English",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/discovery/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "MTV",
+    "provider": "Viacom18",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/mtv.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/mtv/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Music India",
+    "provider": "Music India",
+    "cat": "Music",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/musicindia.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/musicindia/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "ETV Cinema",
+    "provider": "ETV Network",
+    "cat": "Movie",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/etvcinema.png",
+    "language": "Telugu",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/etvcinema/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "NDTV 24x7",
+    "provider": "NDTV",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/ndtv24x7.png",
+    "language": "English",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/ndtv24x7/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "NDTV India",
+    "provider": "NDTV",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/ndtvindia.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/ndtvindia/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "NDTV Profit",
+    "provider": "NDTV",
+    "cat": "Business",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/ndtvprofit.png",
+    "language": "English",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/ndtvprofit/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Rishtey",
+    "provider": "Viacom18",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/rishtey.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/rishtey/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Animal Planet HD World",
+    "provider": "Discovery Communications",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/animalplanethdworld.png",
+    "language": "English",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/animalplanethdworld/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Sanskar",
+    "provider": "Sanskar TV",
+    "cat": "Devotional",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/sanskar.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/sanskar/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Sony Entertainment Television",
+    "provider": "Sony",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/sony.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/sony/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "MTV India",
+    "provider": "Viacom18",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/mtv.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/mtv/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Music India",
+    "provider": "Music India",
+    "cat": "Music",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/musicindia.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/musicindia/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "ETV Cinema",
+    "provider": "ETV Network",
+    "cat": "Movie",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/etvcinema.png",
+    "language": "Telugu",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/etvcinema/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Star Sports Hindi 1",
+    "provider": "Star India",
+    "cat": "Sports",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/starsportshindi1.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/starsportshindi1/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Times Now",
+    "provider": "Times Network",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/timesnow.png",
+    "language": "English",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/timesnow/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "PM e Vidya 01",
+    "provider": "DD",
+    "cat": "Education",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/pmevidya01.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/pmevidya01/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Swayam Prabha 19",
+    "provider": "DD",
+    "cat": "Education",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/swayamprabha19.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/swayamprabha19/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "PM e Vidya 02",
+    "provider": "DD",
+    "cat": "Education",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/pmevidya02.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/pmevidya02/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Swayam Prabha 20",
+    "provider": "DD",
+    "cat": "Education",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/swayamprabha20.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/swayamprabha20/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "PM e Vidya 07",
+    "provider": "DD",
+    "cat": "Education",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/pmevidya07.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/pmevidya07/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "PM e Vidya 03",
+    "provider": "DD",
+    "cat": "Education",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/pmevidya03.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/pmevidya03/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "PM e Vidya 04",
+    "provider": "DD",
+    "cat": "Education",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/pmevidya04.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/pmevidya04/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "PM e Vidya 05",
+    "provider": "DD",
+    "cat": "Education",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/pmevidya05.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/pmevidya05/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "PM e Vidya 06",
+    "provider": "DD",
+    "cat": "Education",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/pmevidya06.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/pmevidya06/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "PM e Vidya 08",
+    "provider": "DD",
+    "cat": "Education",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/pmevidya08.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/pmevidya08/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "PM e Vidya 09",
+    "provider": "DD",
+    "cat": "Education",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/pmevidya09.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/pmevidya09/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "PM e Vidya 10",
+    "provider": "DD",
+    "cat": "Education",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/pmevidya10.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/pmevidya10/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Wion",
+    "provider": "Wion News",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/wion.png",
+    "language": "English",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/wion/master.m3u8",
+    "hd": false
+  },
+
+
+  {
+    "name": "Jalsha Movies HD",
+    "provider": "Star India",
+    "cat": "Movie",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/jalshamovieshd.png",
+    "language": "Bengali",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/jalshamovieshd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Asianet Movies HD",
+    "provider": "Asianet",
+    "cat": "Movie",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/asianetmovieshd.png",
+    "language": "Malayalam",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/asianetmovieshd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Star Sports Select HD1",
+    "provider": "Star India",
+    "cat": "Sports",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/starsportsselecthd1.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/starsportsselecthd1/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Star Sports Select HD2",
+    "provider": "Star India",
+    "cat": "Sports",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/starsportsselecthd2.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/starsportsselecthd2/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Discovery HD World",
+    "provider": "Discovery Communications",
+    "cat": "TV Series",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/discoveryhdworld.png",
+    "language": "English",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/discoveryhdworld/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Zee 24 Ghanta",
+    "provider": "Zee Media",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/zee24ghanta.png",
+    "language": "Bengali",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/zee24ghanta/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Jaihind TV",
+    "provider": "Jaihind",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/jaihindtv.png",
+    "language": "Malayalam",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/jaihindtv/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Dharma Sandesh",
+    "provider": "Dharma Sandesh",
+    "cat": "Devotional",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/dharmasandesh.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/dharmasandesh/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "TLC HD",
+    "provider": "TLC",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/tlchd.png",
+    "language": "English",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/tlchd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Epic",
+    "provider": "Epic",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/epic.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/epic/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Colors Cineplex",
+    "provider": "Viacom18",
+    "cat": "Movie",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/colorscineplex.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/colorscineplex/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Bhojpuri Cinema",
+    "provider": "Bhojpuri Cinema",
+    "cat": "Movie",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/bhojpuricinema.png",
+    "language": "Bhojpuri",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/bhojpuricinema/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "CNBC TV18",
+    "provider": "CNBC",
+    "cat": "Business",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/cnbctv18.png",
+    "language": "English",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/cnbctv18/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "CNBC Bajar",
+    "provider": "CNBC",
+    "cat": "Business",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/cnbcbajar.png",
+    "language": "Marathi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/cnbcbajar/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Mirror Now",
+    "provider": "Mirror Now",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/mirrornow.png",
+    "language": "English",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/mirrornow/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "CNN News 18",
+    "provider": "Network18",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/cnnnews18.png",
+    "language": "English",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/cnnnews18/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "India Today",
+    "provider": "India Today Group",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/indiatoday.png",
+    "language": "English",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/indiatoday/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Al Jazeera",
+    "provider": "Al Jazeera",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/aljazeera.png",
+    "language": "English",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/aljazeera/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "News X",
+    "provider": "News X",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/newsx.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/newsx/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "DW",
+    "provider": "Deutsche Welle",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/dw.png",
+    "language": "English",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/dw/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "India News",
+    "provider": "India News",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/indianews.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/indianews/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "News Nation",
+    "provider": "News Nation",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/newsnation.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/newsnation/master.m3u8",
+    "hd": false
+  },
+  
+  {
+    "name": "PM e Vidya 07",
+    "provider": "DD",
+    "cat": "Education",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/pmevidya07.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/pmevidya07/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "PM e Vidya 08",
+    "provider": "DD",
+    "cat": "Education",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/pmevidya08.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/pmevidya08/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "PM e Vidya 09",
+    "provider": "DD",
+    "cat": "Education",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/pmevidya09.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/pmevidya09/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "PM e Vidya 10",
+    "provider": "DD",
+    "cat": "Education",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/pmevidya10.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/pmevidya10/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Wion",
+    "provider": "Wion News",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/wion.png",
+    "language": "English",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/wion/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "J Movies",
+    "provider": "JioTV Plus",
+    "cat": "Movie",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/jmovies.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/jmovies/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Jaya Plus",
+    "provider": "Jaya TV",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/jayaplus.png",
+    "language": "Tamil",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/jayaplus/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Jaya TV HD",
+    "provider": "Jaya TV",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/jayatvhd.png",
+    "language": "Tamil",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/jayatvhd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Jaya Max",
+    "provider": "Jaya TV",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/jayamax.png",
+    "language": "Tamil",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/jayamax/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Colors Tamil HD",
+    "provider": "Viacom18",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/colorstamilhd.png",
+    "language": "Tamil",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/colorstamilhd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "9X Jalwa",
+    "provider": "9X Media",
+    "cat": "Music",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/9xjalwa.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/9xjalwa/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "9x Jhakaas",
+    "provider": "9X Media",
+    "cat": "Music",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/9xjhakaas.png",
+    "language": "Marathi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/9xjhakaas/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Zee 24 Taas",
+    "provider": "Zee Media",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/zee24taas.png",
+    "language": "Marathi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/zee24taas/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Asianet HD",
+    "provider": "Asianet",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/asianethd.png",
+    "language": "Malayalam",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/asianethd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "JioCinema",
+    "provider": "Jio",
+    "cat": "Movie",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/jiocinema.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/jiocinema/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Disney+ Hotstar",
+    "provider": "Star India",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/hotstar.png",
+    "language": "Multiple",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/hotstar/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Amazon Prime Video",
+    "provider": "Amazon",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/amazonprime.png",
+    "language": "Multiple",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/amazonprime/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Netflix",
+    "provider": "Netflix",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/netflix.png",
+    "language": "Multiple",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/netflix/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Sony Liv",
+    "provider": "Sony",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/sonyliv.png",
+    "language": "Multiple",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/sonyliv/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Voot",
+    "provider": "Viacom18",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/voot.png",
+    "language": "Multiple",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/voot/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Zee5",
+    "provider": "Zee Entertainment",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/zee5.png",
+    "language": "Multiple",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/zee5/master.m3u8",
+    "hd": true
+  },
+  
+  {
+    "name": "PM e Vidya 18",
+    "provider": "DD",
+    "cat": "Education",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/pmevidya18.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/pmevidya18/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "PM e Vidya 19",
+    "provider": "DD",
+    "cat": "Education",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/pmevidya19.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/pmevidya19/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "PM e Vidya 20",
+    "provider": "DD",
+    "cat": "Education",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/pmevidya20.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/pmevidya20/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Wion",
+    "provider": "Wion News",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/wion.png",
+    "language": "English",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/wion/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "J Movies",
+    "provider": "JioTV Plus",
+    "cat": "Movie",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/jmovies.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/jmovies/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Jaya Plus",
+    "provider": "Jaya TV",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/jayaplus.png",
+    "language": "Tamil",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/jayaplus/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Jaya TV HD",
+    "provider": "Jaya TV",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/jayatvhd.png",
+    "language": "Tamil",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/jayatvhd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Jaya Max",
+    "provider": "Jaya TV",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/jayamax.png",
+    "language": "Tamil",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/jayamax/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Colors Tamil HD",
+    "provider": "Viacom18",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/colorstamilhd.png",
+    "language": "Tamil",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/colorstamilhd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "9X Jalwa",
+    "provider": "9X Media",
+    "cat": "Music",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/9xjalwa.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/9xjalwa/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "9x Jhakaas",
+    "provider": "9X Media",
+    "cat": "Music",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/9xjhakaas.png",
+    "language": "Marathi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/9xjhakaas/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Zee 24 Taas",
+    "provider": "Zee Media",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/zee24taas.png",
+    "language": "Marathi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/zee24taas/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Asianet HD",
+    "provider": "Asianet",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/asianethd.png",
+    "language": "Malayalam",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/asianethd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "JioCinema",
+    "provider": "Jio",
+    "cat": "Movie",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/jiocinema.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/jiocinema/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Colors Cineplex",
+    "provider": "Viacom18",
+    "cat": "Movie",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/colorscineplex.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/colorscineplex/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Sony Max HD",
+    "provider": "Sony",
+    "cat": "Movie",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/sonymaxhd.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/sonymaxhd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Set Max HD",
+    "provider": "Sony",
+    "cat": "Movie",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/setmaxhd.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/setmaxhd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Star Pravah HD",
+    "provider": "Star India",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/starpravahhd.png",
+    "language": "Marathi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/starpravahhd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Star Jalsha HD",
+    "provider": "Star India",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/starjalshahd.png",
+    "language": "Bengali",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/starjalshahd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Star Vijay HD",
+    "provider": "Star India",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/starvijayhd.png",
+    "language": "Tamil",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/starvijayhd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Sun TV HD",
+    "provider": "Sun Network",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/suntvhd.png",
+    "language": "Tamil",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/suntvhd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Sun Music HD",
+    "provider": "Sun Network",
+    "cat": "Music",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/sunmusichd.png",
+    "language": "Tamil",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/sunmusichd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Zee TV HD",
+    "provider": "Zee Entertainment",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/zeetvhd.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/zeetvhd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Zee Telugu HD",
+    "provider": "Zee Entertainment",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/zeeteluguhd.png",
+    "language": "Telugu",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/zeeteluguhd/master.m3u8",
+    "hd": true
+  },
+
+  {
+    "name": "Zee Telugu HD",
+    "provider": "Zee Entertainment",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/zeeteluguhd.png",
+    "language": "Telugu",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/zeeteluguhd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Star Gold Select HD",
+    "provider": "Star India",
+    "cat": "Movie",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/stargoldselecthd.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/stargoldselecthd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Sony SAB HD",
+    "provider": "Sony",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/sonysabhd.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/sonysabhd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Star Utsav",
+    "provider": "Star India",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/starutsav.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/starutsav/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Kairali",
+    "provider": "Kairali",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/kairali.png",
+    "language": "Malayalam",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/kairali/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Colors Kannada HD",
+    "provider": "Viacom18",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/colorskannadahd.png",
+    "language": "Kannada",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/colorskannadahd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "News Nation Assam",
+    "provider": "News Nation",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/newsnationassam.png",
+    "language": "Assamese",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/newsnationassam/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "News18 Bihar/Jharkhand",
+    "provider": "Network18",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/news18biharjharkhand.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/news18biharjharkhand/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "TV9 Bharatvarsh",
+    "provider": "TV9 Network",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/tv9bharatvarsh.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/tv9bharatvarsh/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Republic Bharat",
+    "provider": "Republic TV",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/republicbharat.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/republicbharat/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Zee Cinema HD",
+    "provider": "Zee Entertainment",
+    "cat": "Movie",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/zeecinemahd.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/zeecinemahd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Sony MAX 2 HD",
+    "provider": "Sony",
+    "cat": "Movie",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/sonymax2hd.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/sonymax2hd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "MTV Beats",
+    "provider": "Viacom18",
+    "cat": "Music",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/mtvbeats.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/mtvbeats/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Zoom",
+    "provider": "Indrani Media",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/zoom.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/zoom/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Zee News",
+    "provider": "Zee Media",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/zeenews.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/zeenews/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "ABP Majha",
+    "provider": "ABP Group",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/abpmajha.png",
+    "language": "Marathi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/abpmajha/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "News18 Lokmat",
+    "provider": "Network18",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/news18lokmat.png",
+    "language": "Marathi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/news18lokmat/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "JioCinema",
+    "provider": "Jio",
+    "cat": "Movie",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/jiocinema.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/jiocinema/master.m3u8",
+    "hd": true
+  },
+  
+  {
+    "name": "Zee Anmol",
+    "provider": "Zee Entertainment",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/zeeanmol.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/zeeanmol/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Sony Pix",
+    "provider": "Sony",
+    "cat": "Movie",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/sonypix.png",
+    "language": "English",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/sonypix/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Nickelodeon HD",
+    "provider": "Viacom18",
+    "cat": "Kids",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/nickelodeonhd.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/nickelodeonhd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Discovery Science HD",
+    "provider": "Discovery Communications",
+    "cat": "Science",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/discoverysciencehd.png",
+    "language": "English",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/discoverysciencehd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Nat Geo Wild HD",
+    "provider": "National Geographic",
+    "cat": "Science",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/natgeowildhd.png",
+    "language": "English",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/natgeowildhd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Sony YAY!",
+    "provider": "Sony",
+    "cat": "Kids",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/sonyayy.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/sonyayy/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "MTV Beats HD",
+    "provider": "Viacom18",
+    "cat": "Music",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/mtvbeatshd.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/mtvbeatshd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Sony SAB",
+    "provider": "Sony",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/sonysab.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/sonysab/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "ETC Bollywood",
+    "provider": "ETC",
+    "cat": "Music",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/etcbollywood.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/etcbollywood/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Zee Classic",
+    "provider": "Zee Entertainment",
+    "cat": "Movie",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/zeeclassic.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/zeeclassic/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "India Today",
+    "provider": "India Today Group",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/indiatoday.png",
+    "language": "English",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/indiatoday/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "VH1 India",
+    "provider": "Viacom18",
+    "cat": "Music",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/vh1india.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/vh1india/master.m3u8",
+    "hd": false
+  },
+  
+  {
+    "name": "Jalsha Movies HD",
+    "provider": "Star India",
+    "cat": "Movie",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/jalshamovieshd.png",
+    "language": "Bengali",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/jalshamovieshd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Asianet Movies HD",
+    "provider": "Asianet",
+    "cat": "Movie",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/asianetmovieshd.png",
+    "language": "Malayalam",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/asianetmovieshd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Star Sports Select HD1",
+    "provider": "Star India",
+    "cat": "Sports",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/starsportsselecthd1.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/starsportsselecthd1/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Star Sports Select HD2",
+    "provider": "Star India",
+    "cat": "Sports",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/starsportsselecthd2.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/starsportsselecthd2/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Discovery HD World",
+    "provider": "Discovery Communications",
+    "cat": "TV Series",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/discoveryhdworld.png",
+    "language": "English",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/discoveryhdworld/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Zee 24 Ghanta",
+    "provider": "Zee Media",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/zee24ghanta.png",
+    "language": "Bengali",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/zee24ghanta/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Jaihind TV",
+    "provider": "Jaihind",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/jaihindtv.png",
+    "language": "Malayalam",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/jaihindtv/master.m3u8",
+    "hd": false
+  },
+  
+  {
+    "name": "VH1 India",
+    "provider": "Viacom18",
+    "cat": "Music",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/vh1india.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/vh1india/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Zee Anmol",
+    "provider": "Zee Entertainment",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/zeeanmol.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/zeeanmol/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Sony Pix",
+    "provider": "Sony",
+    "cat": "Movie",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/sonypix.png",
+    "language": "English",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/sonypix/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Nickelodeon HD",
+    "provider": "Viacom18",
+    "cat": "Kids",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/nickelodeonhd.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/nickelodeonhd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Discovery Science HD",
+    "provider": "Discovery Communications",
+    "cat": "Science",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/discoverysciencehd.png",
+    "language": "English",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/discoverysciencehd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Nat Geo Wild HD",
+    "provider": "National Geographic",
+    "cat": "Science",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/natgeowildhd.png",
+    "language": "English",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/natgeowildhd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Sony YAY!",
+    "provider": "Sony",
+    "cat": "Kids",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/sonyayy.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/sonyayy/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "MTV Beats HD",
+    "provider": "Viacom18",
+    "cat": "Music",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/mtvbeatshd.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/mtvbeatshd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Sony SAB",
+    "provider": "Sony",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/sonysab.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/sonysab/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "ETC Bollywood",
+    "provider": "ETC",
+    "cat": "Music",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/etcbollywood.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/etcbollywood/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Zee Classic",
+    "provider": "Zee Entertainment",
+    "cat": "Movie",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/zeeclassic.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/zeeclassic/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "India Today",
+    "provider": "India Today Group",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/indiatoday.png",
+    "language": "English",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/indiatoday/master.m3u8",
+    "hd": false
+  },
+  
+  {
+    "name": "Zee Telugu",
+    "provider": "Zee Entertainment",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/zeetelugu.png",
+    "language": "Telugu",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/zeetelugu/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Sports18 Kannada",
+    "provider": "Viacom18",
+    "cat": "Sports",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/sports18kannada.png",
+    "language": "Kannada",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/sports18kannada/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Star Sports 1 Kannada",
+    "provider": "Star India",
+    "cat": "Sports",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/starsports1kannada.png",
+    "language": "Kannada",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/starsports1kannada/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "STAR Utsav",
+    "provider": "Star India",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/starutsav.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/starutsav/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Sony Marathi",
+    "provider": "Sony",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/sonymarathi.png",
+    "language": "Marathi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/sonymarathi/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Zee Marathi",
+    "provider": "Zee Entertainment",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/zeemarathi.png",
+    "language": "Marathi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/zeemarathi/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Samay TV",
+    "provider": "Samay Media",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/samaytv.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/samaytv/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "KTV",
+    "provider": "Sun Network",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/ktv.png",
+    "language": "Tamil",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/ktv/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "DD Bharati",
+    "provider": "Doordarshan",
+    "cat": "General",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/ddbharati.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/ddbharati/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "DD Urdu",
+    "provider": "Doordarshan",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/ddurdu.png",
+    "language": "Urdu",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/ddurdu/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "DD India",
+    "provider": "Doordarshan",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/ddindia.png",
+    "language": "English",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/ddindia/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Remarkable TV",
+    "provider": "Remarkable",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/remarkabletv.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/remarkabletv/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Dhinchaak TV",
+    "provider": "Dhinchaak",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/dhinchaaktv.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/dhinchaaktv/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "DD Meghalaya",
+    "provider": "Doordarshan",
+    "cat": "Regional",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/ddmeghalaya.png",
+    "language": "Meghalaya",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/ddmeghalaya/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "DD Arunachal",
+    "provider": "Doordarshan",
+    "cat": "Regional",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/ddarunachal.png",
+    "language": "Arunachal Pradesh",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/ddarunachal/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "TV9 Kannada",
+    "provider": "TV9",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/tv9kannada.png",
+    "language": "Kannada",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/tv9kannada/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "TV9 Telugu",
+    "provider": "TV9",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/tv9telugu.png",
+    "language": "Telugu",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/tv9telugu/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "TV9 Marathi",
+    "provider": "TV9",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/tv9marathi.png",
+    "language": "Marathi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/tv9marathi/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Samachar Plus",
+    "provider": "Samachar Plus",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/samacharplus.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/samacharplus/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Shemaroo TV",
+    "provider": "Shemaroo",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/shemarootv.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/shemarootv/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Sun TV",
+    "provider": "Sun Network",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/suntv.png",
+    "language": "Tamil",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/suntv/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "DD Kashir",
+    "provider": "Doordarshan",
+    "cat": "Regional",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/ddkashir.png",
+    "language": "Kashmiri",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/ddkashir/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "DD Punjabi",
+    "provider": "Doordarshan",
+    "cat": "Regional",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/ddpunjabi.png",
+    "language": "Punjabi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/ddpunjabi/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "TV5 Kannada",
+    "provider": "TV5",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/tv5kannada.png",
+    "language": "Kannada",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/tv5kannada/master.m3u8",
+    "hd": false
+  },
+  
+  {
+    "name": "News18 Rajasthan",
+    "provider": "Network18",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/news18rajasthan.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/news18rajasthan/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "News18 UP",
+    "provider": "Network18",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/news18up.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/news18up/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "News18 Bihar",
+    "provider": "Network18",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/news18bihar.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/news18bihar/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "News18 MP",
+    "provider": "Network18",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/news18mp.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/news18mp/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "News18 Punjab/Haryana",
+    "provider": "Network18",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/news18punjabharyana.png",
+    "language": "Punjabi/Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/news18punjabharyana/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "News18 Assam/North East",
+    "provider": "Network18",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/news18assamnortheast.png",
+    "language": "Assamese",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/news18assamnortheast/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "News18 Gujarat",
+    "provider": "Network18",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/news18gujarat.png",
+    "language": "Gujarati",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/news18gujarat/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "News18 Kerala",
+    "provider": "Network18",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/news18kerala.png",
+    "language": "Malayalam",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/news18kerala/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "News18 ODISHA",
+    "provider": "Network18",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/news18odisha.png",
+    "language": "Odia",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/news18odisha/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "News18 Tamil Nadu",
+    "provider": "Network18",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/news18tamilnadu.png",
+    "language": "Tamil",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/news18tamilnadu/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "News18 Telangana",
+    "provider": "Network18",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/news18telangana.png",
+    "language": "Telugu",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/news18telangana/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "News18 Uttar Pradesh ",
+    "provider": "Network18",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/news18uttarpradesh.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/news18uttarpradesh/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "News18 Madhya Pradesh/Chhattisgarh",
+    "provider": "Network18",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/news18mpchhattisgarh.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/news18mpchhattisgarh/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Nation TV",
+    "provider": "Nation",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/nationtv.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/nationtv/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "India Today Bangla",
+    "provider": "India Today",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/indiatodaybangla.png",
+    "language": "Bengali",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/indiatodaybangla/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Times Now Navbharat",
+    "provider": "Times Network",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/timesnownavbharat.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/timesnownavbharat/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "News Nation",
+    "provider": "News Nation",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/newsnation.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/newsnation/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "MH One News",
+    "provider": "MH One",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/mhonenews.png",
+    "language": "Marathi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/mhonenews/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "News World India",
+    "provider": "News World",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/newsworldindia.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/newsworldindia/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Raj TV",
+    "provider": "Raj TV",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/rajtv.png",
+    "language": "Tamil",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/rajtv/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Colors Tamil",
+    "provider": "Viacom18",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/colorstamil.png",
+    "language": "Tamil",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/colorstamil/master.m3u8",
+    "hd": false
+  },
+  
+  {
+    "name": "Raj TV",
+    "provider": "Raj TV",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/rajtv.png",
+    "language": "Tamil",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/rajtv/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Colors Tamil",
+    "provider": "Viacom18",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/colorstamil.png",
+    "language": "Tamil",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/colorstamil/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Sony Pal",
+    "provider": "Sony",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/sonypal.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/sonypal/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Sony Marathi",
+    "provider": "Sony",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/sonymarathi.png",
+    "language": "Marathi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/sonymarathi/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Sun Music",
+    "provider": "Sun Network",
+    "cat": "Music",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/sunmusic.png",
+    "language": "Tamil",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/sunmusic/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Sun TV",
+    "provider": "Sun Network",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/suntv.png",
+    "language": "Tamil",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/suntv/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Shemaroo TV",
+    "provider": "Shemaroo",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/shemarootv.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/shemarootv/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "DD Kashir",
+    "provider": "Doordarshan",
+    "cat": "Regional",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/ddkashir.png",
+    "language": "Kashmiri",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/ddkashir/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "DD Punjabi",
+    "provider": "Doordarshan",
+    "cat": "Regional",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/ddpunjabi.png",
+    "language": "Punjabi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/ddpunjabi/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "TV5 Kannada",
+    "provider": "TV5",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/tv5kannada.png",
+    "language": "Kannada",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/tv5kannada/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "DD Ladakh",
+    "provider": "Doordarshan",
+    "cat": "Regional",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/ddladdakh.png",
+    "language": "Ladakhi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/ddladdakh/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "TikTok Live",
+    "provider": "TikTok",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/tiktoklive.png",
+    "language": "Multiple",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/tiktoklive/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Music BD",
+    "provider": "Music BD",
+    "cat": "Music",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/musicbd.png",
+    "language": "Bengali",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/musicbd/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Sony Aath",
+    "provider": "Sony",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/sonyaath.png",
+    "language": "Bengali",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/sonyaath/master.m3u8",
+    "hd": false
+  },
+  
+  {
+    "name": "DD Haryana",
+    "provider": "Doordarshan",
+    "cat": "Regional",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/ddharyana.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/ddharyana/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "DD Rajasthan",
+    "provider": "Doordarshan",
+    "cat": "Regional",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/ddrajasthan.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/ddrajasthan/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "DD Madhya Pradesh",
+    "provider": "Doordarshan",
+    "cat": "Regional",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/ddmp.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/ddmp/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "DD Uttar Pradesh",
+    "provider": "Doordarshan",
+    "cat": "Regional",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/ddup.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/ddup/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "DD Himachal Pradesh",
+    "provider": "Doordarshan",
+    "cat": "Regional",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/ddhp.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/ddhp/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Kairali TV",
+    "provider": "Kairali",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/kairalitv.png",
+    "language": "Malayalam",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/kairalitv/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Mazhavil Manorama",
+    "provider": "Mazhavil Manorama",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/mazhavilmanorama.png",
+    "language": "Malayalam",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/mazhavilmanorama/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Flowers TV",
+    "provider": "Flowers TV",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/flowerstv.png",
+    "language": "Malayalam",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/flowerstv/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Surya TV",
+    "provider": "Kochu TV",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/suryatv.png",
+    "language": "Malayalam",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/suryatv/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Amrita TV",
+    "provider": "Amrita TV",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/amritatv.png",
+    "language": "Malayalam",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/amritatv/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Madhyamam TV",
+    "provider": "Madhyamam",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/madhyamamtv.png",
+    "language": "Malayalam",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/madhyamamtv/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "News18 Kerala",
+    "provider": "Network18",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/news18kerala.png",
+    "language": "Malayalam",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/news18kerala/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Raj News Kannada",
+    "provider": "Raj TV",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/rajnewskannada.png",
+    "language": "Kannada",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/rajnewskannada/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "TV9 Kannada",
+    "provider": "TV9",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/tv9kannada.png",
+    "language": "Kannada",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/tv9kannada/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Public TV",
+    "provider": "Public TV",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/publictv.png",
+    "language": "Kannada",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/publictv/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "News9 Kannada",
+    "provider": "News9",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/news9kannada.png",
+    "language": "Kannada",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/news9kannada/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "TV5 Kannada",
+    "provider": "TV5",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/tv5kannada.png",
+    "language": "Kannada",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/tv5kannada/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "ETV Kannada",
+    "provider": "ETV Network",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/etvkannada.png",
+    "language": "Kannada",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/etvkannada/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Sun TV HD",
+    "provider": "Sun Network",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/suntvhd.png",
+    "language": "Tamil",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/suntvhd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Sun Music HD",
+    "provider": "Sun Network",
+    "cat": "Music",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/sunmusichd.png",
+    "language": "Tamil",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/sunmusichd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Star Vijay HD",
+    "provider": "Star India",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/starvijayhd.png",
+    "language": "Tamil",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/starvijayhd/master.m3u8",
+    "hd": true
+  },
+  
+  {
+    "name": "DD Aizawl",
+    "provider": "Doordarshan",
+    "cat": "Regional",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/ddaizawl.png",
+    "language": "Mizo",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/ddaizawl/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "DD Arunachal Pradesh",
+    "provider": "Doordarshan",
+    "cat": "Regional",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/ddarunachalpradesh.png",
+    "language": "English",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/ddarunachalpradesh/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Prag News",
+    "provider": "Prag News",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/pragnews.png",
+    "language": "Assamese",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/pragnews/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "IND TV",
+    "provider": "IND TV",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/indtv.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/indtv/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Zee Punjabi",
+    "provider": "Zee Entertainment",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/zeepunjabi.png",
+    "language": "Punjabi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/zeepunjabi/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Focus Bangla",
+    "provider": "Focus Bangla",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/focusbangla.png",
+    "language": "Bengali",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/focusbangla/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Nexa TV",
+    "provider": "Nexa",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/nextv.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/nextv/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Akaal Channel",
+    "provider": "Akaal Channel",
+    "cat": "Religious",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/akaalchannel.png",
+    "language": "Punjabi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/akaalchannel/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "MH One News",
+    "provider": "MH One",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/mhonenews.png",
+    "language": "Marathi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/mhonenews/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "News World India",
+    "provider": "News World",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/newsworldindia.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/newsworldindia/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "India TV",
+    "provider": "India TV",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/indiatv.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/indiatv/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "ETV Kannada",
+    "provider": "ETV Network",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/etvkannada.png",
+    "language": "Kannada",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/etvkannada/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "TV5 Kannada",
+    "provider": "TV5",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/tv5kannada.png",
+    "language": "Kannada",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/tv5kannada/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "TV9 Kannada",
+    "provider": "TV9",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/tv9kannada.png",
+    "language": "Kannada",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/tv9kannada/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "News9 Kannada",
+    "provider": "News9",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/news9kannada.png",
+    "language": "Kannada",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/news9kannada/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Public TV",
+    "provider": "Public TV",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/publictv.png",
+    "language": "Kannada",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/publictv/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "NewsKarnataka",
+    "provider": "News Karnataka",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/newskarnataka.png",
+    "language": "Kannada",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/newskarnataka/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Suvarna News",
+    "provider": "Suvarna",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/suvarnanews.png",
+    "language": "Kannada",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/suvarnanews/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Kairali News",
+    "provider": "Kairali",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/kairalinews.png",
+    "language": "Malayalam",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/kairalinews/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Mathrubhumi News",
+    "provider": "Mathrubhumi",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/mathrubhuminews.png",
+    "language": "Malayalam",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/mathrubhuminews/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "MediaOne TV",
+    "provider": "MediaOne",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/mediaonetv.png",
+    "language": "Malayalam",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/mediaonetv/master.m3u8",
+    "hd": false
+  },
+  
+  {
+    "name": "Mazhavil Manorama",
+    "provider": "Mazhavil Manorama",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/mazhavilmanorama.png",
+    "language": "Malayalam",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/mazhavilmanorama/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Flowers TV",
+    "provider": "Flowers TV",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/flowerstv.png",
+    "language": "Malayalam",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/flowerstv/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Surya TV",
+    "provider": "Sun Network",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/suryatv.png",
+    "language": "Malayalam",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/suryatv/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Rosebowl",
+    "provider": "Rosebowl",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/rosebowl.png",
+    "language": "Malayalam",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/rosebowl/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Jaya TV",
+    "provider": "Jaya TV",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/jayatv.png",
+    "language": "Tamil",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/jayatv/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Kalaignar TV",
+    "provider": "Kalaignar TV",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/kalaignartv.png",
+    "language": "Tamil",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/kalaignartv/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Polimer TV",
+    "provider": "Polimer TV",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/polimertv.png",
+    "language": "Tamil",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/polimertv/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Mega TV",
+    "provider": "Mega TV",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/megactv.png",
+    "language": "Tamil",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/megactv/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Sun Music",
+    "provider": "Sun Network",
+    "cat": "Music",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/sunmusic.png",
+    "language": "Tamil",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/sunmusic/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Raj Music",
+    "provider": "Raj TV",
+    "cat": "Music",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/rajmusic.png",
+    "language": "Tamil",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/rajmusic/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Zee Tamil HD",
+    "provider": "Zee Entertainment",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/zeetamild.png",
+    "language": "Tamil",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/zeetamild/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "J Movies",
+    "provider": "JioTV Plus",
+    "cat": "Movie",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/jmovies.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/jmovies/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Colors Kannada HD",
+    "provider": "Viacom18",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/colorskannadahd.png",
+    "language": "Kannada",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/colorskannadahd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Public TV Kannada",
+    "provider": "Public TV",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/publictv.png",
+    "language": "Kannada",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/publictv/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "TV9 Kannada",
+    "provider": "TV9",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/tv9kannada.png",
+    "language": "Kannada",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/tv9kannada/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Zee Kannada",
+    "provider": "Zee Entertainment",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/zeekannada.png",
+    "language": "Kannada",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/zeekannada/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Chutti TV",
+    "provider": "Chutti TV",
+    "cat": "Kids",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/chuttitv.png",
+    "language": "Tamil",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/chuttitv/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Calvin TV",
+    "provider": "Calvin TV",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/calvintv.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/calvintv/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Chutti TV Kids",
+    "provider": "Chutti TV",
+    "cat": "Kids",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/chuttikids.png",
+    "language": "Tamil",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/chuttikids/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Dharma Sandesh",
+    "provider": "Dharma Sandesh",
+    "cat": "Devotional",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/dharmasandesh.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/dharmasandesh/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "TLC HD",
+    "provider": "TLC",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/tlchd.png",
+    "language": "English",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/tlchd/master.m3u8",
+    "hd": true
+  },
+  {
+    "name": "Epic",
+    "provider": "Epic",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/epic.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/epic/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Colors Cineplex",
+    "provider": "Viacom18",
+    "cat": "Movie",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/colorscineplex.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/colorscineplex/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Bhojpuri Cinema",
+    "provider": "Bhojpuri Cinema",
+    "cat": "Movie",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/bhojpuricinema.png",
+    "language": "Bhojpuri",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/bhojpuricinema/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "CNBC TV18",
+    "provider": "CNBC",
+    "cat": "Business",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/cnbctv18.png",
+    "language": "English",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/cnbctv18/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "CNBC Bajar",
+    "provider": "CNBC",
+    "cat": "Business",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/cnbcbajar.png",
+    "language": "Marathi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/cnbcbajar/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Mirror Now",
+    "provider": "Mirror Now",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/mirrornow.png",
+    "language": "English",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/mirrornow/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "CNN News 18",
+    "provider": "Network18",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/cnnnews18.png",
+    "language": "English",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/cnnnews18/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "India Today",
+    "provider": "India Today Group",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/indiatoday.png",
+    "language": "English",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/indiatoday/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Al Jazeera",
+    "provider": "Al Jazeera",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/aljazeera.png",
+    "language": "English",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/aljazeera/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "News X",
+    "provider": "News X",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/newsx.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/newsx/master.m3u8",
+    "hd": false
+  },
+
+  {
+    "name": "News 24",
+    "provider": "News 24",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/news24.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/news24/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "Good News Today",
+    "provider": "Good News Today",
+    "cat": "News",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/goodnewstoday.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/goodnewstoday/master.m3u8",
+    "hd": false
+  },
+  {
+    "name": "CNBC TV18 Prime",
+    "provider": "CNBC",
+    "cat": "Business",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/cnbctv18prime.png",
+    "language": "English",
+    "url": "https://live.dinesh29.com.np/play/cnbctv18prime",
+    "hd": true
+  },
+  {
+    "name": "Colors HD",
+    "provider": "Viacom18",
+    "cat": "Entertainment",
+    "logo": "https://live.dinesh29.com.np/logos/jiotvplus/colorshd.png",
+    "language": "Hindi",
+    "url": "https://live.dinesh29.com.np/stream/jiotvplus/colorshd/master.m3u8",
+    "hd": true
+  }
+];
+
+
+    const categories = ["All", ...Array.from(new Set(channels.map(c => c.cat || c.genre || "")))];
+    let activeCategory = "All";
+
+    const grid = document.getElementById("grid");
+    const catsWrap = document.getElementById("categories");
+    const countEl = document.getElementById("count");
+    const search = document.getElementById("search");
+    const chTotal = document.getElementById("ch-total");
+    const sidebar = document.getElementById("sidebar");
+    const hamburger = document.querySelector(".hamburger");
+    const closeBtn = document.querySelector("#sidebar .close-btn");
+    const popupOverlay = document.getElementById("popup-overlay");
+    const popupIframe = document.getElementById("popup-iframe");
+    const popupClose = document.querySelector(".popup-close");
+
+    // Pages dropdown for sidebar
+    const pageSelect = document.getElementById("sidebar-pages-dropdown");
+    const pageContent = document.getElementById("sidebar-page-content");
+    const PAGE_TEXT = {
+      home: "Home page selected.",
+      about: "About page selected.",
+      contact: "Contact page selected."
+    };
+
+    pageSelect.addEventListener('change', function() {
+      pageContent.textContent = PAGE_TEXT[this.value] || "";
+    });
+
+    // Render categories filter buttons
+    function renderCategories() {
+      catsWrap.innerHTML = "";
+      categories.forEach(cat => {
+        const d = document.createElement("div");
+        d.className = "cat" + (cat === activeCategory ? " active" : "");
+        d.textContent = cat + (cat === "All" ? " (" + channels.length + ")" : "");
+        d.onclick = () => {
+          activeCategory = cat;
+          renderCategories();
+          renderGrid();
+        };
+        catsWrap.appendChild(d);
+      });
+    }
+
+    chTotal.textContent = channels.length + " Channels";
+
+    // Render channels grid
+    function renderGrid() {
+      const q = search.value.trim().toLowerCase();
+      let filtered = channels.filter(ch => {
+        let catv = ch.cat || ch.genre;
+        if (activeCategory !== "All" && catv !== activeCategory) return false;
+        if (
+          q &&
+          !(
+            (ch.name && ch.name.toLowerCase().includes(q)) ||
+            (ch.provider && ch.provider.toLowerCase().includes(q)) ||
+            (ch.cat && ch.cat.toLowerCase().includes(q)) ||
+            (ch.language && ch.language.toLowerCase().includes(q))
+          )
+        ) return false;
+        return true;
+      });
+
+      countEl.textContent = filtered.length + " channels available";
+      grid.innerHTML = "";
+      filtered.forEach(ch => {
+        const a = document.createElement("a");
+        a.className = "card-link";
+        a.setAttribute("aria-label", `View ${ch.name} stream`);
+        const card = document.createElement("div");
+        card.className = "card";
+        const thumb = document.createElement("div");
+        thumb.className = "thumb";
+        const badges = document.createElement("div");
+        badges.className = "badges";
+        if (ch.live || ch.cat === "Sports") {
+          const b1 = document.createElement("div");
+          b1.className = "badge-live";
+          b1.textContent = "LIVE";
+          badges.appendChild(b1);
+        }
+        thumb.appendChild(badges);
+        const img = document.createElement("img");
+        img.src = ch.logo;
+        img.alt = ch.name + " logo";
+        img.onerror = () => {
+          img.src = 'https://via.placeholder.com/80x80?text=Logo';
+        };
+        thumb.appendChild(img);
+        if (ch.hd) {
+          const hd = document.createElement("div");
+          hd.className = "badge-hd";
+          hd.textContent = "HD";
+          thumb.appendChild(hd);
+        }
+        const meta = document.createElement("div");
+        meta.className = "meta";
+        meta.innerHTML = `
+          <div class="left">
+            <div class="title">${ch.name || ch.title || "Unknown"}</div>
+            <div class="genre">Genre: ${ch.cat || ch.genre || "-"}</div>
+            <div class="lang">Language: ${ch.language || "-"}</div>
+          </div>
+          <div class="pill">${ch.provider || ch.cat || "-"}</div>
+        `;
+        const ratingRow = document.createElement("div");
+        ratingRow.className = "rating-row";
+        ratingRow.innerHTML = `<div class="rating">★ ${ch.rating ? ch.rating.toFixed(1) : "--"}</div><div class="fav">♡</div>`;
+        card.appendChild(thumb);
+        card.appendChild(meta);
+        card.appendChild(ratingRow);
+        a.appendChild(card);
+        a.addEventListener("click", (e) => {
+          e.preventDefault();
+          popupIframe.src = ch.url || "#";
+          popupOverlay.classList.add("active");
+        });
+        grid.appendChild(a);
+      });
+    }
+
+    // Popup close logic
+    popupClose.addEventListener("click", () => {
+      popupOverlay.classList.remove("active");
+      popupIframe.src = "";
+    });
+
+    // Close popup on overlay click
+    popupOverlay.addEventListener("click", (e) => {
+      if (e.target === popupOverlay) {
+        popupOverlay.classList.remove("active");
+        popupIframe.src = "";
+      }
+    });
+
+    // Keyboard accessibility for popup close
+    popupClose.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        popupOverlay.classList.remove("active");
+        popupIframe.src = "";
+      }
+    });
+
+    // Search input handler
+    search.addEventListener("input", renderGrid);
+
+    // Sidebar open/close
+    hamburger.addEventListener("click", () => {
+      sidebar.classList.add("active");
+    });
+
+    closeBtn.addEventListener("click", () => {
+      sidebar.classList.remove("active");
+    });
+
+    document.addEventListener("click", e => {
+      if (
+        sidebar.classList.contains("active") &&
+        !sidebar.contains(e.target) &&
+        !hamburger.contains(e.target)
+      ) {
+        sidebar.classList.remove("active");
+      }
+    });
+
+    // Keyboard accessibility for sidebar
+    hamburger.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        sidebar.classList.add("active");
+      }
+    });
+
+    closeBtn.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        sidebar.classList.remove("active");
+      }
+    });
+
+    // Theme toggle logic
+    const toggleThemeBtn = document.getElementById("toggle-theme");
+    const savedTheme = localStorage.getItem("theme") || "dark";
+    function applyTheme(theme) {
+      if (theme === "light") {
+        document.documentElement.style.setProperty("--bg", "var(--bg-light)");
+        document.documentElement.style.setProperty("--panel", "var(--panel-light)");
+        document.documentElement.style.setProperty("--card", "var(--card-light)");
+        document.documentElement.style.setProperty("--text-primary", "var(--text-primary-light)");
+        document.documentElement.style.setProperty("--muted", "var(--muted-light)");
+        document.documentElement.style.setProperty("--pill", "var(--pill-light)");
+        toggleThemeBtn.classList.add("active");
+      } else {
+        document.documentElement.style.setProperty("--bg", "var(--bg-dark)");
+        document.documentElement.style.setProperty("--panel", "var(--panel-dark)");
+        document.documentElement.style.setProperty("--card", "var(--card-dark)");
+        document.documentElement.style.setProperty("--text-primary", "var(--text-primary-dark)");
+        document.documentElement.style.setProperty("--muted", "var(--muted-dark)");
+        document.documentElement.style.setProperty("--pill", "var(--pill-dark)");
+        toggleThemeBtn.classList.remove("active");
+      }
+    }
+
+    applyTheme(savedTheme);
+    toggleThemeBtn.addEventListener("click", () => {
+      const newTheme = toggleThemeBtn.classList.contains("active") ? "dark" : "light";
+      applyTheme(newTheme);
+      localStorage.setItem("theme", newTheme);
+    });
+
+    // Initial render
+    renderCategories();
+    renderGrid();
+  </script>
 </body>
 </html>
