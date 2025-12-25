@@ -1842,7 +1842,7 @@ const WATCH_SERVERS = {
     
     // Download servers
     const DOWNLOAD_SERVERS = {
-      movie1: { name: "Movie Server 1", movie: "https://dl.vidsrc.vip/movie/", tv: "https://dl.vidsrc.vip/tv/", icon: "fas fa-download" },
+      movie1: { name: "Movie Server 1", movie: "https://dl.vidsrc.vip/movie/", tv: "https://bunnyddl.termsandconditionshere.workers.dev/tv/", icon: "fas fa-download" },
       movie2: { name: "Movie Server 2", movie: "https://bunnyddl.termsandconditionshere.workers.dev/movie/", tv: "https://server2.example.com/tv/", icon: "fas fa-download" }
     };
 
@@ -2276,7 +2276,7 @@ const WATCH_SERVERS = {
   heroRating.textContent =
     media.vote_average ? media.vote_average.toFixed(1) : "—";
   heroOverview.textContent =
-    media.overview || "Explore thousands of movies and TV shows on Priofm.";
+    media.overview || "Explore thousands of movies and TV shows Rangatv.";
 
   heroWatch.onclick = () =>
     openDetails(media.id, media.media_type);
@@ -2883,8 +2883,8 @@ const WATCH_SERVERS = {
       url.searchParams.set("media", currentMedia.id);
       url.searchParams.set("type", currentMedia.media_type);
       const shareData = {
-        title: `${currentMedia.title || currentMedia.name} | Priofm`,
-        text: `Check out ${currentMedia.title || currentMedia.name} on Priofm`,
+        title: `${currentMedia.title || currentMedia.name} | rangatv`,
+        text: `Check out ${currentMedia.title || currentMedia.name} on rangatv`,
         url: url.toString()
       };
       try {
@@ -3289,8 +3289,8 @@ document.addEventListener('DOMContentLoaded', () => {
   savePrefs.addEventListener('click', () => {
     const analytics = document.getElementById('analytics-cookie').checked;
     const ads = document.getElementById('ads-cookie').checked;
-    localStorage.setItem('priofm_cookies', 'custom');
-    // यहाँ तुम analytics/ads के लिए logic add कर सकते हो अगर future में use करना हो
+    localStorage.setItem('rangatv_cookies', 'custom');
+
     modal.style.display = 'none';
     hideBanner();
   });
