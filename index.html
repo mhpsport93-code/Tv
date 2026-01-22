@@ -1036,49 +1036,7 @@
       line-height: 1.4;
     }
 
-    /* Full Page Download Iframe */
-    .bp-download-overlay {
-      position: fixed;
-      inset: 0;
-      background: hsl(var(--bg));
-      z-index: 9999;
-      display: none;
-      flex-direction: column;
-    }
-    .bp-download-overlay.active {
-      display: flex;
-    }
-    .bp-download-header {
-      padding: 16px;
-      border-bottom: 1px solid hsl(var(--border));
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: hsl(var(--card));
-    }
-    .bp-download-frame {
-      flex: 1;
-      width: 100%;
-      border: none;
-    }
-    .bp-download-controls {
-      padding: 12px 16px;
-      display: flex;
-      gap: 15px;
-      background: hsl(var(--card));
-      border-bottom: 1px solid hsl(var(--border));
-    }
-    .bp-download-sandbox {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 14px;
-    }
-    .bp-download-sandbox input[type="checkbox"] {
-      width: 18px;
-      height: 18px;
-      accent-color: hsl(var(--pink));
-    }
+    
 
     /* Search page */
     .page { display: none; padding-top: 76px; padding-bottom: 84px }
@@ -1766,28 +1724,7 @@
     </div>
   </section>
 
-  <!-- Full Page Download Iframe -->
-  <div id="bpDownloadOverlay" class="bp-download-overlay">
-    <div class="bp-download-header">
-      <strong id="bpDownloadTitle">Download</strong>
-      <button id="bpCloseDownloadOverlay" class="btn" style="width:auto; padding:8px 16px">
-        <i class="fas fa-times"></i> Close
-      </button>
-    </div>
-    <div class="bp-download-controls">
-      <div class="bp-download-sandbox">
-        <input type="checkbox" id="bpDownloadAdblockToggle">
-        <label for="bpDownloadAdblockToggle">Enable Popup Block Sandbox</label>
-      </div>
-    </div>
-    <iframe 
-  id="bpDownloadFrame" 
-  class="bp-download-frame" 
-  sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-downloads allow-modals allow-top-navigation-by-user-activation"
-  allowfullscreen>
-</iframe>
-  </div>
-
+  
   <!-- Bottom navigation -->
   <nav class="bottom" role="navigation" aria-label="Bottom">
     <button class="tab active" data-tab="home" id="tab-home">
@@ -2082,32 +2019,30 @@ const WATCH_SERVERS = {
     }
 
     function openDownloadOverlay(serverId, seasonNum, episodeNum) {
-      if (!currentMedia) return;
-      
-      const mediaType = currentMedia.media_type;
-      const mediaId = currentMedia.id;
-      let url = '';
-      
-      let server;
-      if (mediaType === "movie") {
-        server = DOWNLOAD_SERVERS[serverId];
-        url = server.movie + mediaId;
-      } else {
-        server = TV_DOWNLOAD_SERVERS[serverId];
-        url = `${server.tv}${mediaId}/${seasonNum}/${episodeNum}`;
-      }
-      
-      $('#bpDownloadTitle').textContent = `Download from ${server.name}`;
-      $('#bpDownloadFrame').src = url;
-      $('#bpDownloadOverlay').classList.add('active');
-      document.body.style.overflow = 'hidden';
-    }
+  if (!currentMedia) return;
 
-    function closeDownloadOverlay() {
-      $('#bpDownloadOverlay').classList.remove('active');
-      $('#bpDownloadFrame').src = '';
-      document.body.style.overflow = '';
-    }
+  const mediaType = currentMedia.media_type;
+  const mediaId = currentMedia.id;
+
+  let url = "";
+  let server;
+
+  // 🎬 MOVIE
+  if (mediaType === "movie") {
+    server = DOWNLOAD_SERVERS[serverId];
+    url = server.movie + mediaId;
+  } 
+  // 📺 TV SERIES
+  else {
+    server = TV_DOWNLOAD_SERVERS[serverId];
+    url = `${server.tv}${mediaId}/${seasonNum}/${episodeNum}`;
+  }
+
+  // ✅ DIRECT DOWNLOAD SITE OPEN
+  window.open(url, "_blank");
+}
+
+    
 
     // ====== Fetchers ======
     const fetchJson = (url) => fetch(url).then(r => r.json()).catch(e => {
@@ -2377,10 +2312,27 @@ const WATCH_SERVERS = {
       // Setup download tab
       setupDownloadTab(mediaType);
       
-      // Setup video tab for TV series
-      if (mediaType === "tv") {
-        setupVideoTabForTV();
-      }
+      // ===== TV vs MOVIE UI CONTROL =====
+const seasonTabBtn = document.querySelector('.bp-tabs span[data-tab="seasons"]');
+const seasonsTab = document.getElementById('seasonsTab');
+const seasonControls = document.getElementById('bpSeasonControls');
+const episodesContainer = document.getElementById('bpEpisodesContainer');
+
+if (mediaType === "tv") {
+
+  if (seasonTabBtn) seasonTabBtn.style.display = 'inline';
+  if (seasonsTab) seasonsTab.style.display = 'block';
+  if (seasonControls) seasonControls.style.display = 'grid';
+  if (episodesContainer) episodesContainer.style.display = 'block';
+
+  setupVideoTabForTV(); // 
+} else {
+  
+  if (seasonTabBtn) seasonTabBtn.style.display = 'none';
+  if (seasonsTab) seasonsTab.style.display = 'none';
+  if (seasonControls) seasonControls.style.display = 'none';
+  if (episodesContainer) episodesContainer.style.display = 'none';
+}
       
       // Update buttons
       updateBookmarkButton();
@@ -2977,8 +2929,8 @@ const WATCH_SERVERS = {
       }
     });
 
-    // Download overlay
-    $('#bpCloseDownloadOverlay').addEventListener('click', closeDownloadOverlay);
+    
+    
 
     // Back button
     $('#backBtn').addEventListener('click', () => {
