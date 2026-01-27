@@ -3296,50 +3296,46 @@ init();
     return SHORT_BASE + encodeURIComponent(url);
   }
 
-  /* ===============================
-     1️⃣ window.open HIJACK
-     =============================== */
+  /* =====================================
+     DOWNLOAD DETECTION (SMART)
+     ===================================== */
+  function isDownloadUrl(url) {
+    return (
+      /\.zip|\.rar|\.7z|\.apk|\.mp4|\.mkv|\.avi|\.mov|\.pdf|\.exe/i.test(url) ||
+      /download|dl|getfile|file|mirror/i.test(url)
+    );
+  }
+
+  /* =====================================
+     1️⃣ window.open → ONLY DOWNLOAD
+     ===================================== */
   const _open = window.open;
   window.open = function (url, target, features) {
     try {
-      url = toShort(url);
+      if (isDownloadUrl(url)) {
+        url = toShort(url);
+      }
     } catch (e) {}
     return _open.call(window, url, target || "_blank", features);
   };
 
-  /* ===============================
-     2️⃣ iframe.src HIJACK
-     =============================== */
-  const iframeProto = HTMLIFrameElement.prototype;
-  const srcDesc = Object.getOwnPropertyDescriptor(
-    iframeProto,
-    "src"
-  );
+  /* =====================================
+     2️⃣ <a> CLICK → ONLY DOWNLOAD
+     ===================================== */
+  document.addEventListener("click", function (e) {
+    const a = e.target.closest("a");
+    if (!a) return;
 
-  Object.defineProperty(iframeProto, "src", {
-    set: function (url) {
-      try {
-        url = toShort(url);
-      } catch (e) {}
-      return srcDesc.set.call(this, url);
-    },
-    get: srcDesc.get
-  });
+    const href = a.getAttribute("href");
+    if (!href) return;
 
-  /* ===============================
-     3️⃣ location.assign / replace
-     =============================== */
-  const _assign = window.location.assign.bind(window.location);
-  window.location.assign = function (url) {
-    _assign(toShort(url));
-  };
+    if (isDownloadUrl(href)) {
+      e.preventDefault();
+      window.open(toShort(href), "_blank");
+    }
+  }, true);
 
-  const _replace = window.location.replace.bind(window.location);
-  window.location.replace = function (url) {
-    _replace(toShort(url));
-  };
-
-  console.log("✅ Universal Shortener Injector Active");
+  console.log("✅ Download-only shortener active");
 
 })();
 //]]>
