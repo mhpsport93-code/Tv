@@ -3283,63 +3283,7 @@ init();
 
 
   </script>
-<script>
-//<![CDATA[
-(function () {
 
-  const SHORT_BASE =
-    "https://usiieie.blogspot.com/?steps=3&step=1&url=";
-
-  function toShort(url) {
-    if (!url) return url;
-    if (url.includes("usiieie.blogspot.com")) return url;
-    return SHORT_BASE + encodeURIComponent(url);
-  }
-
-  /* =====================================
-     DOWNLOAD DETECTION (SMART)
-     ===================================== */
-  function isDownloadUrl(url) {
-    return (
-      /\.zip|\.rar|\.7z|\.apk|\.mp4|\.mkv|\.avi|\.mov|\.pdf|\.exe/i.test(url) ||
-      /download|dl|getfile|file|mirror/i.test(url)
-    );
-  }
-
-  /* =====================================
-     1️⃣ window.open → ONLY DOWNLOAD
-     ===================================== */
-  const _open = window.open;
-  window.open = function (url, target, features) {
-    try {
-      if (isDownloadUrl(url)) {
-        url = toShort(url);
-      }
-    } catch (e) {}
-    return _open.call(window, url, target || "_blank", features);
-  };
-
-  /* =====================================
-     2️⃣ <a> CLICK → ONLY DOWNLOAD
-     ===================================== */
-  document.addEventListener("click", function (e) {
-    const a = e.target.closest("a");
-    if (!a) return;
-
-    const href = a.getAttribute("href");
-    if (!href) return;
-
-    if (isDownloadUrl(href)) {
-      e.preventDefault();
-      window.open(toShort(href), "_blank");
-    }
-  }, true);
-
-  console.log("✅ Download-only shortener active");
-
-})();
-//]]>
-</script>
   
 </body>
 </html>
