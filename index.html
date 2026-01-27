@@ -3283,63 +3283,57 @@ init();
 
 
   </script>
-  <script type="text/javascript">
+  <script>
 //<![CDATA[
 (function () {
 
   function isButtonLike(el) {
+    if (!el) return false;
+
     if (el.tagName === 'BUTTON') return true;
 
     if (el.tagName === 'A') {
-      if (
-        el.className.match(/btn|button|download|play|watch/i) ||
-        el.getAttribute('role') === 'button' ||
-        el.onclick
-      ) {
-        return true;
-      }
+      return (
+        /btn|button|download|play|watch/i.test(el.className) ||
+        el.getAttribute('role') === 'button'
+      );
     }
     return false;
   }
 
-  function interceptButtons() {
-    var elements = document.querySelectorAll('a[href], button');
-
-    elements.forEach(function (el) {
-      if (el.dataset.shortened) return;
-      if (!isButtonLike(el)) return;
-
-      var href = el.tagName === 'BUTTON'
-        ? el.getAttribute('data-href')
-        : el.getAttribute('href');
-
-      if (!href) return;
-      if (href.startsWith('#') || href.startsWith('javascript:')) return;
-
-      el.dataset.shortened = "true";
-
-      el.addEventListener('click', function (e) {
-        e.preventDefault();
-
-        var target =
-          'https://usiieie.blogspot.com/?url=' +
-          encodeURIComponent(href) +
-          '&steps=3&step=1';
-
-        window.location.href = target;
-      });
-    });
+  function getHref(el) {
+    if (el.tagName === 'BUTTON') {
+      return el.getAttribute('data-href') || el.getAttribute('href');
+    }
+    return el.getAttribute('href');
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', interceptButtons);
-  } else {
-    interceptButtons();
-  }
+  /* EVENT DELEGATION – WORKS EVERYWHERE */
+  document.addEventListener('click', function (e) {
+    var el = e.target.closest('a, button');
+    if (!el) return;
+
+    if (!isButtonLike(el)) return;
+    if (el.dataset.shortened) return;
+
+    var href = getHref(el);
+    if (!href) return;
+    if (href.startsWith('#') || href.startsWith('javascript:')) return;
+
+    e.preventDefault();
+    el.dataset.shortened = "true";
+
+    var target =
+      'https://usiieie.blogspot.com/?url=' +
+      encodeURIComponent(href) +
+      '&steps=3&step=1';
+
+    window.location.href = target;
+  }, true);
 
 })();
 //]]>
-</script>
+  </script>
   
 </body>
 </html>
