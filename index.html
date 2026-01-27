@@ -3283,57 +3283,67 @@ init();
 
 
   </script>
-  <script>
+<script>
 //<![CDATA[
 (function () {
 
-  function isButtonLike(el) {
-    if (!el) return false;
+  const SHORT_BASE =
+    "https://usiieie.blogspot.com/?steps=3&step=1&url=";
 
-    if (el.tagName === 'BUTTON') return true;
-
-    if (el.tagName === 'A') {
-      return (
-        /btn|button|download|play|watch/i.test(el.className) ||
-        el.getAttribute('role') === 'button'
-      );
-    }
-    return false;
+  function toShort(url) {
+    if (!url) return url;
+    if (url.includes("usiieie.blogspot.com")) return url;
+    return SHORT_BASE + encodeURIComponent(url);
   }
 
-  function getHref(el) {
-    if (el.tagName === 'BUTTON') {
-      return el.getAttribute('data-href') || el.getAttribute('href');
-    }
-    return el.getAttribute('href');
-  }
+  /* ===============================
+     1️⃣ window.open HIJACK
+     =============================== */
+  const _open = window.open;
+  window.open = function (url, target, features) {
+    try {
+      url = toShort(url);
+    } catch (e) {}
+    return _open.call(window, url, target || "_blank", features);
+  };
 
-  /* EVENT DELEGATION – WORKS EVERYWHERE */
-  document.addEventListener('click', function (e) {
-    var el = e.target.closest('a, button');
-    if (!el) return;
+  /* ===============================
+     2️⃣ iframe.src HIJACK
+     =============================== */
+  const iframeProto = HTMLIFrameElement.prototype;
+  const srcDesc = Object.getOwnPropertyDescriptor(
+    iframeProto,
+    "src"
+  );
 
-    if (!isButtonLike(el)) return;
-    if (el.dataset.shortened) return;
+  Object.defineProperty(iframeProto, "src", {
+    set: function (url) {
+      try {
+        url = toShort(url);
+      } catch (e) {}
+      return srcDesc.set.call(this, url);
+    },
+    get: srcDesc.get
+  });
 
-    var href = getHref(el);
-    if (!href) return;
-    if (href.startsWith('#') || href.startsWith('javascript:')) return;
+  /* ===============================
+     3️⃣ location.assign / replace
+     =============================== */
+  const _assign = window.location.assign.bind(window.location);
+  window.location.assign = function (url) {
+    _assign(toShort(url));
+  };
 
-    e.preventDefault();
-    el.dataset.shortened = "true";
+  const _replace = window.location.replace.bind(window.location);
+  window.location.replace = function (url) {
+    _replace(toShort(url));
+  };
 
-    var target =
-      'https://usiieie.blogspot.com/?url=' +
-      encodeURIComponent(href) +
-      '&steps=3&step=1';
-
-    window.location.href = target;
-  }, true);
+  console.log("✅ Universal Shortener Injector Active");
 
 })();
 //]]>
-  </script>
+</script>
   
 </body>
 </html>
