@@ -1068,6 +1068,100 @@ ul { list-style: none; }
   font-size: 14px;
   font-weight: 600;
 }
+
+#installPopup{
+position:fixed;
+left:0;
+right:0;
+bottom:20px;
+display:none;
+justify-content:center;
+z-index:999999;
+padding:0 12px;
+}
+
+.install-card{
+width:100%;
+max-width:420px;
+background:#111827;
+border:1px solid rgba(255,255,255,.08);
+border-radius:18px;
+padding:14px;
+display:flex;
+align-items:center;
+gap:12px;
+box-shadow:0 15px 40px rgba(0,0,0,.45);
+backdrop-filter:blur(10px);
+position:relative;
+animation:slideUp .35s ease;
+}
+
+@keyframes slideUp{
+from{
+transform:translateY(100px);
+opacity:0;
+}
+to{
+transform:translateY(0);
+opacity:1;
+}
+}
+
+.app-icon{
+width:56px;
+height:56px;
+flex-shrink:0;
+}
+
+.app-icon svg{
+width:100%;
+height:100%;
+display:block;
+}
+
+.app-info{
+flex:1;
+min-width:0;
+}
+
+.app-info h3{
+margin:0;
+font-size:16px;
+font-weight:700;
+color:#fff;
+}
+
+.app-info p{
+margin:4px 0 0;
+font-size:12px;
+color:#9ca3af;
+}
+
+#installBtn{
+border:none;
+background:#2196F3;
+color:#fff;
+font-weight:700;
+padding:10px 14px;
+border-radius:10px;
+cursor:pointer;
+white-space:nowrap;
+}
+
+#closeInstall{
+position:absolute;
+top:6px;
+right:6px;
+width:26px;
+height:26px;
+border:none;
+border-radius:50%;
+background:rgba(255,255,255,.08);
+color:#fff;
+cursor:pointer;
+font-size:14px;
+}
+
 </style>
 </head>
 <body>
@@ -1282,13 +1376,78 @@ var _0x40359d=_0x2848;(function(_0xcce98c,_0x5aef9f){var _0x4c48d9=_0x2848,_0x34
   <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./service-worker.js')
-      .then(() => console.log('PWA Ready'))
-      .catch(err => console.log(err));
+    navigator.serviceWorker.register('./service-worker.js');
   });
 }
-  </script>
 
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+
+  if (!localStorage.getItem('hdmoviedl_install_closed')) {
+    document.getElementById('installPopup').style.display = 'flex';
+  }
+});
+
+document.getElementById('installBtn').addEventListener('click', async () => {
+
+  if (!deferredPrompt) return;
+
+  deferredPrompt.prompt();
+
+  await deferredPrompt.userChoice;
+
+  deferredPrompt = null;
+
+  document.getElementById('installPopup').style.display = 'none';
+});
+
+document.getElementById('closeInstall').addEventListener('click', () => {
+
+  document.getElementById('installPopup').style.display = 'none';
+
+  localStorage.setItem(
+    'hdmoviedl_install_closed',
+    'true'
+  );
+});
+
+window.addEventListener('appinstalled', () => {
+
+  document.getElementById('installPopup').style.display = 'none';
+
+  localStorage.removeItem(
+    'hdmoviedl_install_closed'
+  );
+});
+
+<div id="installPopup">
+  <div class="install-card">
+
+    <button id="closeInstall" aria-label="Close">✕</button>
+
+    <div class="app-icon">
+      <svg viewBox="0 0 64 64" fill="none">
+        <rect x="4" y="4" width="56" height="56" rx="16" fill="#2196F3"/>
+        <path d="M20 18H28V46H20V18Z" fill="white"/>
+        <path d="M36 18H44V46H36V18Z" fill="white"/>
+      </svg>
+    </div>
+
+    <div class="app-info">
+      <h3>HDmovieDL</h3>
+      <p>Install app for faster access & better experience.</p>
+    </div>
+
+    <button id="installBtn">
+      Install App
+    </button>
+
+  </div>
+</div>
+</script>
   
 </body>
 </html>
