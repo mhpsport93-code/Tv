@@ -1069,32 +1069,41 @@ ul { list-style: none; }
   font-weight: 600;
 }
 
+/* ===========================
+HDmovieDL Premium Install Popup
+=========================== */
+
 .popup-overlay{
 position:fixed;
 inset:0;
 display:flex;
 justify-content:center;
 align-items:center;
-padding:20px;
-background:rgba(0,0,0,.70);
+padding:18px;
+background:rgba(0,0,0,.72);
 backdrop-filter:blur(10px);
+-webkit-backdrop-filter:blur(10px);
 z-index:999999;
 }
 
 .popup-card{
 width:100%;
-max-width:380px;
+max-width:390px;
 padding:28px;
-border-radius:30px;
+border-radius:34px;
+
 background:
 linear-gradient(
 180deg,
 rgba(14,14,25,.98),
-rgba(8,8,14,.98)
+rgba(7,7,15,.98)
 );
+
 border:1px solid rgba(255,255,255,.05);
+
 box-shadow:
-0 20px 60px rgba(0,0,0,.65);
+0 30px 80px rgba(0,0,0,.70);
+
 position:relative;
 overflow:hidden;
 }
@@ -1106,6 +1115,7 @@ top:0;
 left:0;
 right:0;
 height:2px;
+
 background:
 linear-gradient(
 90deg,
@@ -1119,131 +1129,34 @@ transparent
 position:absolute;
 top:18px;
 right:18px;
-width:48px;
-height:48px;
-border:none;
-border-radius:16px;
-background:rgba(255,255,255,.04);
-color:#888;
-font-size:20px;
-}
 
-.icon-box{
-width:72px;
-height:72px;
-border-radius:22px;
-display:flex;
-align-items:center;
-justify-content:center;
-background:
-linear-gradient(
-145deg,
-rgba(255,255,255,.08),
-rgba(255,255,255,.02)
-);
-border:1px solid rgba(255,255,255,.08);
-margin-bottom:28px;
-}
-
-.icon-box img{
-width:54px;
-height:54px;
-border-radius:14px;
-}
-
-.notice{
-display:flex;
-align-items:center;
-gap:8px;
-font-size:12px;
-letter-spacing:2px;
-color:#8f8f98;
-margin-bottom:18px;
-}
-
-.dot{
-width:8px;
-height:8px;
-border-radius:50%;
-background:#ff4b4b;
-}
-
-.popup-card h2{
-margin:0 0 24px;
-font-size:36px;
-line-height:1.25;
-font-weight:700;
-color:#fff;
-}
-
-.popup-card h2 span{
-color:#ffb04c;
-font-style:italic;
-}
-
-.install-btn{
-width:100%;
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:18px;
-border-radius:20px;
-border:1px solid rgba(215,155,40,.25);
-background:
-linear-gradient(
-135deg,
-rgba(215,155,40,.18),
-rgba(215,155,40,.05)
-);
-color:#fff;
-margin-bottom:14px;
-}
-
-.install-btn small{
-display:block;
-font-size:11px;
-letter-spacing:1px;
-color:#d7a248;
-margin-bottom:4px;
-}
-
-.install-btn strong{
-font-size:20px;
-font-weight:700;
-}
-
-.btn-icon{
 width:52px;
 height:52px;
-border-radius:16px;
-background:rgba(215,155,40,.18);
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:22px;
-}
 
-.dismiss-btn{
-width:100%;
-padding:18px;
 border:none;
 border-radius:18px;
-background:rgba(255,255,255,.05);
-display:flex;
-justify-content:space-between;
-align-items:center;
-color:#fff;
-font-size:18px;
+
+background:
+rgba(255,255,255,.05);
+
+color:#8f8f8f;
+
+font-size:22px;
+cursor:pointer;
 }
 
-.dismiss-btn small{
-color:#8a8a8a;
-font-size:14px;
+.close-btn:hover{
+color:#fff;
 }
+
 .icon-box{
-width:72px;
-height:72px;
-border-radius:22px;
+width:86px;
+height:86px;
+
+border-radius:26px;
+
+padding:8px;
+
 display:flex;
 align-items:center;
 justify-content:center;
@@ -1251,17 +1164,159 @@ justify-content:center;
 background:
 linear-gradient(
 180deg,
-rgba(255,255,255,.05),
-rgba(255,255,255,.02)
+rgba(255,255,255,.08),
+rgba(255,255,255,.03)
 );
 
 border:1px solid rgba(255,255,255,.08);
 
 box-shadow:
 inset 0 1px 0 rgba(255,255,255,.08),
-0 10px 20px rgba(0,0,0,.25);
+0 10px 20px rgba(0,0,0,.30);
 
 margin-bottom:28px;
+}
+
+.icon-box img{
+width:100%;
+height:100%;
+object-fit:cover;
+border-radius:18px;
+display:block;
+}
+
+.notice{
+display:flex;
+align-items:center;
+gap:8px;
+
+font-size:12px;
+letter-spacing:3px;
+
+color:#8f8f98;
+
+margin-bottom:18px;
+}
+
+.dot{
+width:10px;
+height:10px;
+border-radius:50%;
+background:#ff4b4b;
+}
+
+.popup-card h2{
+margin:0 0 28px;
+
+font-size:34px;
+line-height:1.2;
+
+font-weight:700;
+
+color:#fff;
+}
+
+.highlight{
+color:#ffb04c;
+font-style:italic;
+}
+
+.install-btn{
+width:100%;
+
+display:flex;
+align-items:center;
+justify-content:space-between;
+
+padding:18px;
+
+border-radius:22px;
+
+border:1px solid rgba(215,155,40,.25);
+
+background:
+linear-gradient(
+135deg,
+rgba(215,155,40,.18),
+rgba(215,155,40,.05)
+);
+
+color:#fff;
+
+cursor:pointer;
+
+margin-bottom:16px;
+}
+
+.install-content small{
+display:block;
+
+font-size:11px;
+
+letter-spacing:2px;
+
+color:#d7a248;
+
+margin-bottom:6px;
+}
+
+.install-content strong{
+font-size:18px;
+font-weight:700;
+}
+
+.btn-icon{
+width:58px;
+height:58px;
+
+border-radius:18px;
+
+background:
+rgba(215,155,40,.18);
+
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.dismiss-btn{
+width:100%;
+
+padding:18px;
+
+border:none;
+
+border-radius:22px;
+
+background:
+rgba(255,255,255,.05);
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+color:#fff;
+
+font-size:18px;
+
+cursor:pointer;
+}
+
+.dismiss-btn small{
+font-size:14px;
+color:#8d8d8d;
+}
+
+@media(max-width:480px){
+
+.popup-card{
+padding:24px;
+}
+
+.popup-card h2{
+font-size:30px;
+}
+
 }
 </style>
 </head>
@@ -1469,53 +1524,36 @@ margin-bottom:28px;
   <p class="footer-copy">&copy; 2026 <strong>HDmovieDL</strong> - All rights reserved.</p>
   
 </footer>
-<!-- HDmovieDL Premium Install Popup -->
+<!-- ===========================
+HDmovieDL Premium Install Popup
+=========================== -->
 
 <div id="installPopup" class="popup-overlay">
 
   <div class="popup-card">
 
-    <button id="closeInstall" class="close-btn">✕</button>
+    <button id="closeInstall" class="close-btn">
+      ✕
+    </button>
 
+    <!-- APP ICON -->
     <div class="icon-box">
-
-      <svg width="42" height="42" viewBox="0 0 64 64" fill="none">
-
-        <defs>
-          <linearGradient id="hdgrad" x1="0" y1="0" x2="64" y2="64">
-            <stop offset="0%" stop-color="#ffb347"/>
-            <stop offset="100%" stop-color="#ff8c00"/>
-          </linearGradient>
-        </defs>
-
-        <rect
-          x="4"
-          y="4"
-          width="56"
-          height="56"
-          rx="16"
-          fill="url(#hdgrad)"
-        />
-
-        <path
-          d="M18 20H24V30H40V20H46V44H40V35H24V44H18V20Z"
-          fill="white"
-        />
-
-      </svg>
-
+      <img src="./icon-192.png" alt="HDmovieDL">
     </div>
 
+    <!-- NOTICE -->
     <div class="notice">
       <span class="dot"></span>
       HDMOVIEDL OFFICIAL APP
     </div>
 
+    <!-- TITLE -->
     <h2>
       Install our new
       <span class="highlight">official app</span>
     </h2>
 
+    <!-- INSTALL BUTTON -->
     <button id="installBtn" class="install-btn">
 
       <div class="install-content">
@@ -1530,19 +1568,19 @@ margin-bottom:28px;
 
       <div class="btn-icon">
 
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
 
           <path
-            d="M12 3V15"
+            d="M12 4V15"
             stroke="white"
-            stroke-width="2.4"
+            stroke-width="2.5"
             stroke-linecap="round"
           />
 
           <path
             d="M7 10L12 15L17 10"
             stroke="white"
-            stroke-width="2.4"
+            stroke-width="2.5"
             stroke-linecap="round"
             stroke-linejoin="round"
           />
@@ -1550,7 +1588,7 @@ margin-bottom:28px;
           <path
             d="M5 20H19"
             stroke="white"
-            stroke-width="2.4"
+            stroke-width="2.5"
             stroke-linecap="round"
           />
 
@@ -1560,6 +1598,7 @@ margin-bottom:28px;
 
     </button>
 
+    <!-- DISMISS -->
     <button id="dismissBtn" class="dismiss-btn">
 
       <span>Dismiss</span>
