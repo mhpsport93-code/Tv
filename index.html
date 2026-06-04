@@ -1162,10 +1162,76 @@ cursor:pointer;
 font-size:14px;
 }
 
+#appBanner{
+position:fixed;
+top:0;
+left:0;
+right:0;
+height:70px;
+background:#0d6efd;
+display:flex;
+align-items:center;
+gap:10px;
+padding:10px;
+z-index:999999;
+box-shadow:0 4px 10px rgba(0,0,0,.2);
+}
+
+#appBanner img{
+width:48px;
+height:48px;
+border-radius:12px;
+background:#fff;
+}
+
+.bannerText{
+flex:1;
+display:flex;
+flex-direction:column;
+color:#fff;
+}
+
+.bannerText strong{
+font-size:15px;
+}
+
+.bannerText span{
+font-size:12px;
+opacity:.9;
+}
+
+#installBtn{
+border:none;
+background:#fff;
+color:#0d6efd;
+padding:8px 16px;
+border-radius:8px;
+font-weight:700;
+cursor:pointer;
+}
+
+#closeBanner{
+background:none;
+border:none;
+color:#fff;
+font-size:20px;
+cursor:pointer;
+}
 </style>
 </head>
 <body>
+<div id="appBanner">
+  <button id="closeBanner">✕</button>
 
+  <img src="icon-192.png" alt="HDmovieDL">
+
+  <div class="bannerText">
+    <strong>HDmovieDL App</strong>
+    <span>Install for a better experience</span>
+  </div>
+
+  <button id="installBtn">Install</button>
+</div>
 <header class="site-header">
   <div class="header-inner">
     <div class="header-left">
@@ -1448,6 +1514,38 @@ window.addEventListener('appinstalled', () => {
   </div>
 </div>
 </script>
-  
+  <script>
+let deferredPrompt;
+
+window.addEventListener('load',()=>{
+
+ if(!localStorage.getItem('bannerClosed')){
+   document.getElementById('appBanner').style.display='flex';
+ }
+
+});
+
+window.addEventListener('beforeinstallprompt',(e)=>{
+ e.preventDefault();
+ deferredPrompt=e;
+});
+
+document.getElementById('installBtn').onclick=async()=>{
+
+ if(deferredPrompt){
+   deferredPrompt.prompt();
+   await deferredPrompt.userChoice;
+ }
+
+};
+
+document.getElementById('closeBanner').onclick=()=>{
+
+ document.getElementById('appBanner').style.display='none';
+
+ localStorage.setItem('bannerClosed','1');
+
+};
+</script>
 </body>
 </html>
