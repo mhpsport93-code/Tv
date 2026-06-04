@@ -1069,77 +1069,127 @@ ul { list-style: none; }
   font-weight: 600;
 }
 
-/* ===== COMPACT HDmovieDL POPUP ===== */
+/* ===== HDmovieDL Premium Popup Fixed ===== */
+
+#installPopup{
+position:fixed !important;
+inset:0 !important;
+
+display:none;
+
+justify-content:center;
+align-items:center;
+
+padding:16px;
+
+background:rgba(0,0,0,.78);
+
+backdrop-filter:blur(10px);
+-webkit-backdrop-filter:blur(10px);
+
+z-index:999999999 !important;
+}
+
+#installPopup.show{
+display:flex !important;
+}
 
 .popup-card{
-width:100%;
-max-width:350px;
-padding:18px;
-border-radius:3px;
+
+position:relative;
+
+width:min(92vw,360px);
+
+padding:24px;
+
+margin:0 !important;
 
 background:
 linear-gradient(
 180deg,
-rgba(14,14,25,.98),
-rgba(7,7,15,.98)
+rgba(13,13,24,.98),
+rgba(6,6,12,.99)
 );
+
+border-radius:30px;
 
 border:1px solid rgba(255,255,255,.05);
 
 box-shadow:
-0 15px 40px rgba(0,0,0,.55);
+0 25px 80px rgba(0,0,0,.75);
 
-position:relative;
 overflow:hidden;
+
+animation:popupShow .25s ease;
 }
 
-.popup-card:before{
+@keyframes popupShow{
+from{
+opacity:0;
+transform:translateY(20px) scale(.96);
+}
+to{
+opacity:1;
+transform:translateY(0) scale(1);
+}
+}
+
+.popup-card::before{
 content:"";
+
 position:absolute;
 top:0;
 left:0;
 right:0;
+
 height:2px;
 
 background:
 linear-gradient(
 90deg,
-#ff3d3d,
-#ffb84d,
-#ff3d3d
+#ff4040,
+#ffb347,
+#ff4040
 );
 }
 
-/* CLOSE */
+/* Close */
 
 .close-btn{
 position:absolute;
-top:10px;
-right:10px;
 
-width:38px;
-height:38px;
+top:16px;
+right:16px;
+
+width:48px;
+height:48px;
 
 border:none;
-border-radius:3px;
 
-background:rgba(255,255,255,.05);
+border-radius:16px;
+
+background:
+rgba(255,255,255,.04);
 
 color:#8f8f8f;
-font-size:18px;
+
+font-size:22px;
+
 cursor:pointer;
 }
 
-/* ICON */
+/* Icon */
 
 .icon-box{
-width:62px;
-height:62px;
 
-padding:4px;
-margin-bottom:14px;
+width:78px;
+height:78px;
 
-border-radius:3px;
+padding:6px;
+
+margin-bottom:22px;
+
+border-radius:22px;
 
 display:flex;
 align-items:center;
@@ -1149,48 +1199,74 @@ background:
 linear-gradient(
 180deg,
 rgba(255,255,255,.08),
-rgba(255,255,255,.03)
+rgba(255,255,255,.02)
 );
 
 border:1px solid rgba(255,255,255,.08);
+
+box-shadow:
+inset 0 1px 0 rgba(255,255,255,.08),
+0 10px 20px rgba(0,0,0,.25);
 }
 
 .icon-box img{
 width:100%;
 height:100%;
-border-radius:3px;
+
 object-fit:cover;
+
+border-radius:16px;
 }
 
-/* NOTICE */
+/* Notice */
 
 .notice{
-font-size:10px;
-letter-spacing:2px;
-margin-bottom:10px;
-color:#8f8f98;
+display:flex;
+align-items:center;
+gap:8px;
+
+font-size:11px;
+
+letter-spacing:3px;
+
+text-transform:uppercase;
+
+color:#8e8e97;
+
+margin-bottom:16px;
 }
 
-/* TITLE */
+.dot{
+width:10px;
+height:10px;
+
+border-radius:50%;
+
+background:#ff4d4d;
+}
+
+/* Title */
 
 .popup-card h2{
-margin:0 0 16px;
 
-font-size:24px;
-line-height:1.15;
+margin:0 0 22px;
+
+font-size:28px;
+
+line-height:1.2;
 
 font-weight:700;
+
 color:#fff;
 }
 
-/* OFFICIAL */
-
 .highlight{
+
 background:
 linear-gradient(
 90deg,
-#ff4444,
-#ffcc33
+#ff4545,
+#ffcf45
 );
 
 -webkit-background-clip:text;
@@ -1199,77 +1275,89 @@ linear-gradient(
 font-style:italic;
 }
 
-/* INSTALL BUTTON */
+/* Install Button */
 
 .install-btn{
+
 width:100%;
 
 display:flex;
 align-items:center;
 justify-content:space-between;
 
-padding:12px;
+padding:14px;
 
-border-radius:3px;
+margin-bottom:12px;
 
-border:1px solid rgba(255,180,77,.20);
+border-radius:20px;
+
+border:1px solid rgba(255,183,71,.20);
 
 background:
 linear-gradient(
 135deg,
-rgba(255,180,77,.12),
-rgba(255,120,0,.04)
+rgba(255,183,71,.14),
+rgba(255,140,0,.05)
 );
-
-margin-bottom:10px;
 
 cursor:pointer;
 }
 
 .install-content small{
+
 display:block;
-font-size:9px;
+
+font-size:10px;
+
 letter-spacing:2px;
-color:#ffb84d;
-margin-bottom:3px;
+
+color:#ffb347;
+
+margin-bottom:4px;
 }
 
 .install-content strong{
-font-size:15px;
+
+font-size:17px;
+
 font-weight:700;
+
 color:#fff;
 }
 
 .btn-icon{
-width:42px;
-height:42px;
 
-border-radius:3px;
+width:52px;
+height:52px;
 
-background:
-linear-gradient(
-135deg,
-#ffb84d,
-#ff8a00
-);
+border-radius:16px;
 
 display:flex;
 align-items:center;
 justify-content:center;
+
+background:
+linear-gradient(
+135deg,
+#ffb347,
+#ff9100
+);
 }
 
-/* DISMISS */
+/* Dismiss */
 
 .dismiss-btn{
+
 width:100%;
 
-padding:12px;
+padding:15px;
 
 border:none;
 
-border-radius:3px;
+border-radius:20px;
 
-background:rgba(255,255,255,.05);
+background:
+rgba(255,255,255,.05);
 
 display:flex;
 justify-content:space-between;
@@ -1277,26 +1365,44 @@ align-items:center;
 
 color:#fff;
 
-font-size:15px;
+font-size:17px;
+
 cursor:pointer;
 }
 
 .dismiss-btn small{
-font-size:11px;
-color:#8d8d8d;
+
+font-size:13px;
+
+color:#8f8f8f;
 }
 
-/* MOBILE */
+/* Mobile */
 
 @media(max-width:480px){
 
 .popup-card{
-max-width:320px;
-padding:16px;
+width:100%;
+max-width:340px;
+padding:22px;
 }
 
 .popup-card h2{
-font-size:22px;
+font-size:26px;
+}
+
+.icon-box{
+width:72px;
+height:72px;
+}
+
+.install-content strong{
+font-size:16px;
+}
+
+.btn-icon{
+width:48px;
+height:48px;
 }
 
 }
