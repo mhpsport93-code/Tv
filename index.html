@@ -1571,9 +1571,11 @@ height:40px;
     <div class="download-section" id="downloadSection">
       <h2>Download Links</h2>
       <div class="dl-accordion" id="dlAccordion"></div>
+      
       <div class="how-to-download" id="howToDownload">
         <div class="how-to-download-header">
           <div class="how-to-icon"><i class="fa fa-info"></i></div>
+          
           <h3>How to Download</h3>
         </div>
         <div class="how-to-steps">
@@ -1711,8 +1713,19 @@ HDmovieDL Premium Install Popup
 </footer>
 
 <script>
-var API_URL = "https://script.google.com/macros/s/AKfycbzjuKNpO3CVBim1EV0waD95F6V2ZEwdlE90mUHPOX97s9E8Aus9Ml9KeEyh99EMTt0M/exec";
 
+function getApi() {
+  const arr = [
+    104,116,116,112,115,58,47,47,115,99,114,105,112,116,46,103,111,111,103,108,101,46,99,111,109,
+    47,109,97,99,114,111,115,47,115,47,
+    65,75,102,121,99,98,122,106,117,75,78,112,79,51,67,86,66,105,109,49,69,86,48,119,97,68,57,53,70,
+    54,86,50,90,69,119,100,108,69,57,48,109,85,72,80,79,88,57,55,115,57,69,56,65,117,115,57,77,108,
+    57,75,101,69,121,104,57,57,69,77,84,116,48,77,47,101,120,101,99
+  ];
+  return String.fromCharCode(...arr);
+}
+
+const API_URL = getApi();
 var POSTS_PER_PAGE = 24;
 var allMovies = [];
 var filteredMovies = [];
