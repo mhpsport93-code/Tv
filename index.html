@@ -1713,7 +1713,6 @@ HDmovieDL Premium Install Popup
 </footer>
 
 <script>
-
 function getApi() {
   const arr = [
     104,116,116,112,115,58,47,47,115,99,114,105,112,116,46,103,111,111,103,108,101,46,99,111,109,
@@ -1809,30 +1808,56 @@ document.addEventListener("DOMContentLoaded", function() {
   showSkeletons();
 
   var urlParams = new URLSearchParams(window.location.search);
-  var pageSlug = urlParams.get("page");
 
-  if (pageSlug) {
-    loadMovies(function() {
-      loadPages(function() {
-        renderStaticPage(pageSlug);
-      });
+var pageSlug = urlParams.get("page");
+var genreParam = urlParams.get("genre");
+
+if (pageSlug) {
+
+  loadMovies(function () {
+
+    loadPages(function () {
+
+      renderStaticPage(pageSlug);
+
     });
-  } else {
-    var hash = window.location.hash;
-    if (hash && hash.indexOf("#movie-") === 0) {
-      var tmdbFromHash = hash.replace("#movie-", "");
-      loadMovies(function() {
-        loadPages(function() {});
-        showMovieByTmdb(tmdbFromHash);
-      });
-    } else {
-      loadMovies(function() {
-        loadPages(function() {});
-      });
-    }
-  }
-});
 
+  });
+
+} else {
+
+  var hash = window.location.hash;
+
+  if (hash && hash.indexOf("#movie-") === 0) {
+
+    var tmdbFromHash = hash.replace("#movie-", "");
+
+    loadMovies(function () {
+
+      loadPages(function () {});
+
+      showMovieByTmdb(tmdbFromHash);
+
+    });
+
+  } else {
+
+    loadMovies(function () {
+
+      loadPages(function () {});
+
+      if (genreParam) {
+        applyCategory(decodeURIComponent(genreParam));
+      } else {
+        applyCategory("all");
+      }
+
+    });
+
+  }
+
+}
+});
 /* NAV */
 function navigateHome() {
   history.pushState(null, "", window.location.pathname);
@@ -1913,11 +1938,24 @@ function showSkeletons() {
 
 /* CATEGORY */
 function applyCategory(cat, clickedEl) {
+
   currentCategory = cat || "all";
   currentPage = 1;
 
+  if (currentCategory === "all") {
+    history.pushState({}, "", window.location.pathname + window.location.hash);
+  } else {
+    history.pushState(
+      {},
+      "",
+      "?genre=" + encodeURIComponent(currentCategory) + window.location.hash
+    );
+  }
+
   var sidebarLinks = document.querySelectorAll(".sidebar-link");
+
   for (var i = 0; i < sidebarLinks.length; i++) {
+
     sidebarLinks[i].classList.remove("active-nav");
 
     if (
@@ -1926,10 +1964,13 @@ function applyCategory(cat, clickedEl) {
     ) {
       sidebarLinks[i].classList.add("active-nav");
     }
+
   }
 
   sectionTitle.textContent =
-    currentCategory === "all" ? "Latest Releases" : currentCategory;
+    currentCategory === "all"
+      ? "Latest Releases"
+      : currentCategory;
 
   applyFiltersAndRender();
 }
@@ -1937,7 +1978,9 @@ function applyCategory(cat, clickedEl) {
 function applyFiltersAndRender() {
 
   if (currentCategory === "all") {
+
     filteredMovies = allMovies.slice();
+
   } else {
 
     filteredMovies = allMovies.filter(function (m) {
@@ -1947,17 +1990,21 @@ function applyFiltersAndRender() {
         .split(",");
 
       for (var i = 0; i < genres.length; i++) {
+
         if (genres[i].trim() === currentCategory.toLowerCase()) {
           return true;
         }
+
       }
 
       return false;
+
     });
 
   }
 
   currentPage = 1;
+
   renderPage();
   renderPagination();
 }
@@ -1977,41 +2024,75 @@ function loadMovies(callback) {
     })
     .then(function(data) {
       if (data && data.success === true && Array.isArray(data.posts)) {
-        allMovies = data.posts
-          .filter(function(p) {
-            return String(p.status || "").toLowerCase() === "published";
-          })
-          .map(function(p) {
-            return {
-              id: String(p.id || ""),
-              tmdb_id: String(p.tmdb_id || ""),
-              title: String(p.title || ""),
-              category: String(p.category || ""),
-              genre: String(p.genre || ""),
-              language: String(p.language || ""),
-              release_year: String(p.release_year || ""),
-              quality: String(p.quality || ""),
-              duration: String(p.duration || ""),
-              tagline: String(p.tagline || ""),
-              description: String(p.description || ""),
-              poster_url: String(p.poster_url || ""),
-              backdrop_url: String(p.backdrop_url || ""),
-              trailer_url: String(p.trailer_url || ""),
-              director: String(p.director || ""),
-              stars: String(p.stars || ""),
-              release_date: String(p.release_date || ""),
-              custom_date: String(p.custom_date || ""),
-              prints: String(p.prints || ""),
-              audios: String(p.audios || ""),
-              download_links_json: String(p.download_links_json || "[]"),
-              views: Number(p.views || 0),
-              status: String(p.status || "")
-            };
-          });
-      } else {
-        allMovies = [];
-      }
-      filteredMovies = allMovies.slice();
+     
+
+   allMovies = data.posts
+  .filter(function(p) {
+    return String(p.status || "").toLowerCase() === "published";
+  })
+  .map(function(p) {
+    return {
+      id: String(p.id || ""),
+      tmdb_id: String(p.tmdb_id || ""),
+      title: String(p.title || ""),
+      category: String(p.category || ""),
+      genre: String(p.genre || ""),
+      language: String(p.language || ""),
+      release_year: String(p.release_year || ""),
+      quality: String(p.quality || ""),
+      duration: String(p.duration || ""),
+      tagline: String(p.tagline || ""),
+      description: String(p.description || ""),
+      poster_url: String(p.poster_url || ""),
+      backdrop_url: String(p.backdrop_url || ""),
+      trailer_url: String(p.trailer_url || ""),
+      director: String(p.director || ""),
+      stars: String(p.stars || ""),
+      release_date: String(p.release_date || ""),
+      custom_date: String(p.custom_date || ""),
+      prints: String(p.prints || ""),
+      audios: String(p.audios || ""),
+      download_links_json: String(p.download_links_json || "[]"),
+      views: Number(p.views || 0),
+      status: String(p.status || "")
+    };
+  })
+  .sort(function(a, b) {
+
+    var today = new Date();
+    today.setHours(0,0,0,0);
+
+    function getDate(d) {
+      if (!d) return null;
+      var x = new Date(d);
+      if (isNaN(x)) return null;
+      x.setHours(0,0,0,0);
+      return x;
+    }
+
+    var ad = getDate(a.custom_date);
+    var bd = getDate(b.custom_date);
+
+    var aPinned = ad && ad >= today;
+    var bPinned = bd && bd >= today;
+
+    if (aPinned && !bPinned) return -1;
+    if (!aPinned && bPinned) return 1;
+
+    if (aPinned && bPinned) {
+      return bd - ad;
+    }
+
+    return Number(b.id) - Number(a.id);
+
+  });
+
+} else {
+  allMovies = [];
+}
+
+filteredMovies = allMovies.slice();
+      
       var urlParams = new URLSearchParams(window.location.search);
       if (!urlParams.get("page")) {
         renderPage();
