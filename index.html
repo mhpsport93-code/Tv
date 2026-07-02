@@ -2752,37 +2752,7 @@ window.addEventListener('appinstalled', () => {
   document.getElementById('installPopup').style.display = 'none';
   localStorage.setItem('hdmoviedl_installed', '1');
 });
-<script>
-const CURRENT_VERSION = "1.0.0";
 
-fetch("./version.json?" + Date.now())
-.then(res => res.json())
-.then(data => {
-
-  if (data.version !== CURRENT_VERSION) {
-
-    if (confirm("🚀 New Update Available!\n\nClick OK to update now.")) {
-
-      if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.getRegistration().then(function(reg){
-          if(reg){
-            reg.update().then(function(){
-              location.reload();
-            });
-          } else {
-            location.reload();
-          }
-        });
-      } else {
-        location.reload();
-      }
-
-    }
-
-  }
-
-});
-</script>
 </script>
   
 </body>
