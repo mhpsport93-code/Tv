@@ -142,13 +142,31 @@ ul { list-style: none; }
 
 /* SEARCH BAR */
 .search-bar {
-  display: none;
   border-top: 1px solid var(--border);
   background: var(--bg-card);
-  padding: 12px 16px;
+
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+
+  transform: translateY(-12px);
+
+  padding: 0 16px;
+
+  transition:
+    max-height .35s ease,
+    opacity .3s ease,
+    transform .3s ease,
+    padding .3s ease;
 }
 
-.search-bar.active { display: block; }
+.search-bar.active {
+  max-height: 80px;
+  opacity: 1;
+  transform: translateY(0);
+
+  padding: 12px 16px;
+}
 
 .search-bar-inner {
   display: flex;
@@ -167,8 +185,9 @@ ul { list-style: none; }
   color: var(--text);
 }
 
-.search-bar input::placeholder { color: var(--text-muted); }
-
+.search-bar input::placeholder {
+  color: var(--text-muted);
+}
 /* SIDEBAR */
 .sidebar-overlay {
   position: fixed;
@@ -1409,6 +1428,68 @@ height:40px;
 }
 
 }
+.tg-top-btn{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  margin:12px 16px;
+  flex-wrap:wrap;
+}
+
+.tg-top-btn .tg-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  background:#0088cc;
+  color:#fff;
+  padding:10px 18px;
+  border-radius:8px;
+  font-size:14px;
+  font-weight:600;
+}
+
+.tg-top-btn .adult-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  background:#e60023 !important;
+  color:#fff;
+  padding:10px 18px;
+  border-radius:8px;
+  font-size:14px;
+  font-weight:600;
+}
+.home-tags{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:10px;
+    margin:14px 16px;
+}
+
+.home-tags a{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:12px 18px;
+    border-radius:10px;
+    background:linear-gradient(135deg,var(--primary),var(--primary-hover));
+    color:#fff;
+    text-decoration:none;
+    font-size:13px;
+    font-weight:700;
+    box-shadow:0 6px 18px rgba(232,96,10,.35);
+    transition:.25s;
+}
+
+.home-tags a i{
+    font-size:14px;
+}
+
+.home-tags a:hover{
+    transform:translateY(-2px);
+    filter:brightness(1.08);
+}
 </style>
 </head>
 <body>
@@ -1440,9 +1521,46 @@ height:40px;
   </div>
 </header>
 <div class="tg-top-btn">
-  <a href="https://t.me/moviehubplayrequest" target="_blank">
+
+  <a href="https://t.me/moviehubplayrequest" target="_blank" class="tg-btn">
     <i class="fa-brands fa-telegram"></i> Join Telegram Channel
   </a>
+
+  <a href="?" class="adult-btn" onclick="applyCategory('Adult');return false;">
+    <i class="fa-solid fa-circle-exclamation"></i> Adult 18+
+  </a>
+
+</div>
+<div class="home-tags">
+
+<a href="?" onclick="applyCategory('Action & Adventure');return false;">
+<i class="fa-solid fa-bolt"></i> Action & Adventure
+</a>
+
+<a href="?" onclick="applyCategory('Sci-Fi & Fantasy');return false;">
+<i class="fa-solid fa-rocket"></i> Sci-Fi & Fantasy
+</a>
+
+<a href="?" onclick="applyCategory('Science Fiction');return false;">
+<i class="fa-solid fa-robot"></i> Science Fiction
+</a>
+
+<a href="?" onclick="applyCategory('Drama');return false;">
+<i class="fa-solid fa-masks-theater"></i> Drama
+</a>
+
+<a href="?" onclick="applyCategory('Mystery');return false;">
+<i class="fa-solid fa-user-secret"></i> Mystery
+</a>
+
+<a href="?" onclick="applyCategory('Fantasy');return false;">
+<i class="fa-solid fa-hat-wizard"></i> Fantasy
+</a>
+
+<a href="?" onclick="applyCategory('Horror');return false;">
+<i class="fa-solid fa-ghost"></i> Horror
+</a>
+
 </div>
 <div class="bookmark-notice" id="bookmarkNotice">
   <span class="bm-icon"><i class="fa fa-bookmark"></i></span>
@@ -1467,7 +1585,7 @@ height:40px;
     <img
       class="sidebar-logo-img"
       src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiU8zFpS8B_oiguLid5x10IXOpuxlIIlSiwBoE6blEOBIR-ak5HfRiAtF7sBe9aoYYNBlt2ppgwAErrWJ5yYeJ7nkCFRo9MF6SHvYLgeB0p-dBcjQl_IDDJGHKd4JKYhgvt3CnP-_utOWgEJJ8ePVDsH-pfSph6QDR2FFUvgVUs_648ZrKTE0Uc3rfihk8i/s1052/1000119312.png"
-      alt="4KHDHub"
+      alt="HDmovieDL"
       onerror="this.style.display='none';this.nextElementSibling.style.display='block';"
     >
     <span class="sidebar-logo-text"><span class="logo-4k">4K</span><span class="logo-hd">HD</span><span class="logo-hub">Hub</span></span>
@@ -1611,7 +1729,7 @@ height:40px;
 </div>
 
 <footer class="site-footer">
-  <div class="footer-brand">4KHDHub</div>
+  <div class="footer-brand">HDmovieDL</div>
   <p class="footer-tagline">Your one-stop destination for high-quality movies and TV shows in various formats.</p>
   <div class="footer-section-title">Quick Links</div>
   
@@ -1623,7 +1741,7 @@ height:40px;
   <div class="footer-section-title">Connect</div>
   <p class="footer-connect-text">Stay updated with the latest releases and news.</p>
   <hr class="footer-divider">
-  <p class="footer-copy">&copy; 2026 <strong>4KHDHub</strong> - All rights reserved.</p>
+  <p class="footer-copy">&copy; 2026 <strong>HDmovieDL</strong> - All rights reserved.</p>
   <!-- ===========================
 HDmovieDL Premium Install Popup
 =========================== -->
@@ -2050,6 +2168,7 @@ function loadMovies(callback) {
       stars: String(p.stars || ""),
       release_date: String(p.release_date || ""),
       custom_date: String(p.custom_date || ""),
+      created_at: String(p.created_at || ""),
       prints: String(p.prints || ""),
       audios: String(p.audios || ""),
       download_links_json: String(p.download_links_json || "[]"),
@@ -2059,31 +2178,22 @@ function loadMovies(callback) {
   })
   .sort(function(a, b) {
 
-    var today = new Date();
-    today.setHours(0,0,0,0);
-
-    function getDate(d) {
-      if (!d) return null;
-      var x = new Date(d);
-      if (isNaN(x)) return null;
-      x.setHours(0,0,0,0);
-      return x;
+    function getTime(v) {
+      if (!v) return 0;
+      var d = new Date(v);
+      return isNaN(d.getTime()) ? 0 : d.getTime();
     }
 
-    var ad = getDate(a.custom_date);
-    var bd = getDate(b.custom_date);
+    var aCreated = getTime(a.created_at);
+    var bCreated = getTime(b.created_at);
 
-    var aPinned = ad && ad >= today;
-    var bPinned = bd && bd >= today;
+    var aCustom = getTime(a.custom_date);
+    var bCustom = getTime(b.custom_date);
 
-    if (aPinned && !bPinned) return -1;
-    if (!aPinned && bPinned) return 1;
+    var aSort = Math.max(aCreated, aCustom);
+    var bSort = Math.max(bCreated, bCustom);
 
-    if (aPinned && bPinned) {
-      return bd - ad;
-    }
-
-    return Number(b.id) - Number(a.id);
+    return bSort - aSort;
 
   });
 
@@ -2642,6 +2752,37 @@ window.addEventListener('appinstalled', () => {
   document.getElementById('installPopup').style.display = 'none';
   localStorage.setItem('hdmoviedl_installed', '1');
 });
+<script>
+const CURRENT_VERSION = "1.0.0";
+
+fetch("./version.json?" + Date.now())
+.then(res => res.json())
+.then(data => {
+
+  if (data.version !== CURRENT_VERSION) {
+
+    if (confirm("🚀 New Update Available!\n\nClick OK to update now.")) {
+
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.getRegistration().then(function(reg){
+          if(reg){
+            reg.update().then(function(){
+              location.reload();
+            });
+          } else {
+            location.reload();
+          }
+        });
+      } else {
+        location.reload();
+      }
+
+    }
+
+  }
+
+});
+</script>
 </script>
   
 </body>
